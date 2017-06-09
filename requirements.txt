@@ -1,4 +1,8 @@
-boto3
 flask
 requests
 pony
+arrow 
+click 
+gunicorn
+PyMySQL
+python-dateutil
