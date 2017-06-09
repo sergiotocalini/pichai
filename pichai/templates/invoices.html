@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Invoices{% endblock %}
+
+{% block body %}
+<div class="invoices-header section-header">
+  <div class="title">
+    <i class="fa fa-fw fa-book" aria-hidden="true"></i>
+    Invoices
+  </div>
+</div>
+<div class="invoices-content section-content" style="padding: 0% 1%;">
+  <div id="invoices-toolbar" class="toolbar" 
+       style="max-height: 10%;padding: 0.5% 0%;">
+    <button class="btn btn-primary" type="button" data-toggle="modal"
+	    id="invoice-new" aria-haspopup="true" aria-expanded="false">
+      <i class="fa fa-fw fa-plus"></i>
+    </button>
+  </div>
+  <table id="invoices-table"
+         data-show-toggle="false" data-show-export="false"
+         data-show-columns="false" data-show-multi-sort="true"
+         data-sort-name="id" data-pagination="true"
+         data-toggle="table" data-search="true"
+         data-show-footer="false" data-page-size="50"
+         data-escape="false" data-side-pagination="server"
+	 data-query-params="InvoicesParams"
+	 data-show-refresh="true" data-show-header="true"
+	 data-url="{{ url_for('api_invoices_all') }}?"
+	 data-response-handler="InvoicesResponseHandler"
+	 data-toolbar="#invoices-toolbar"
+	 data-reorderable-columns="true" data-show-pagination-switch="true"
+	 data-detail-view="true"
+	 data-detail-formatter="InvoicesDetailFormatter"
+         class="table-hover table-striped table-compact table-responsive
+                table-condensed table-autosize">
+    <thead>
+      <tr>
+	<th data-field="id" data-align="center" title="ID"
+	    data-sortable="true" data-valign="middle"
+	    data-formatter="InvoicesFormatterID">
+          <i class="fa fa-fw fa-book"></i>
+	  Invoice
+	</th>
+        <th data-field="issued_on" data-valign="middle"
+	    data-align="center" data-sortable="true"
+	    data-formatter="InvoicesFormatterDate">
+          <i class="fa fa-fw fa-calendar"></i>
+          Date
+        </th>
+        <th data-field="customer" data-valign="middle"
+	    data-align="center" data-sortable="true"
+	    data-formatter="InvoicesFormatterCustomer">
+          <i class="fa fa-fw fa-id-card"></i>
+          Customer
+        </th>
+        <th data-field="issued_by" data-valign="middle"
+	    data-align="center" data-sortable="true"
+	    data-formatter="InvoicesFormatterIssuedBy">
+          <i class="fa fa-fw fa-id-badge"></i>
+          Author
+        </th>
+        <th data-field="actions" data-align="center" 
+	    data-valign="middle"
+	    data-formatter="InvoicesFormatterActions">
+          <i class="fa fa-cogs fa-fw"></i>
+          Actions
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block modals %}
+{% include "modals/invoice.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+
+<link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.css" rel="stylesheet">
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.js"></script>
+
+<script src="/pichai/static/extras/bootstrap-confirmation/js/bootstrap-confirmation.min.js"></script>
+
+<link href="/pichai/static/extras/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
+<script src="/pichai/static/extras/bootstrap-select/js/bootstrap-select.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+	$(window).resize(function () {
+            autosize_tables();
+	    jqlisteners();
+	});
+	autosize_tables();
+	jqlisteners();
+    });
+{% include "js/common.js" %}
+{% include "js/invoice.js" %}
+function jqlisteners() {
+    $("#customer-new").unbind();
+    $("#customer-new").click(function(e) {
+	e.preventDefault();
+	var modal = "#ModalInvoice";
+	$(modal).find('.modal-title').html("Customer: New");
+        $(modal).modal('show');
+    });
+    $(".customer-open").confirmation({
+	onConfirm: function(e) {
+	    var customer = $(this).attr('customer');
+	    window.open(
+		"{{ url_for('customers') }}/" + customer,
+		'_blank');
+	},
+	placement: 'left',
+	btnOkLabel: 'Yes',
+	btnOkClass: 'btn btn-sm btn-primary',
+	btnOkIcon: 'fa fa-fw fa-check',
+	btnCancelLabel: 'No',
+	btnCancelClass: 'btn btn-sm btn-danger',
+	btnCancelIcon: 'fa fa-fw fa-remove',
+    });
+}
+</script>
+{% endblock %}

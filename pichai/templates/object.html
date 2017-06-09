@@ -1,0 +1,612 @@
+{% extends "base.html" %}
+
+{% block title %}Object #{{ obj.id }}{% endblock %}
+
+{% block body %}
+<div class="object-header section-header">
+  <div class="title">
+    <i class="fa fa-fw fa-cubes" aria-hidden="true"></i>
+    Objects: {{ obj.name }}
+  </div>
+  <div class="toolbar">
+    <a id="object-refresh" href="#object-refresh" data-id="{{ obj.id }}"
+       class="button" style="padding: 0% 2%;">
+      <i class="fa fa-2x fa-refresh" aria-hidden="true"></i>
+    </a>    
+    <a id="object-edit" href="#object-edit" data-id="{{ obj.id }}"
+       class="button" style="padding: 0% 2%;">
+      <i class="fa fa-2x fa-pencil" aria-hidden="true"></i>
+    </a>    
+    <a id="object-delete" href="#object-delete" data-id="{{ obj.id }}"
+       class="button" style="padding: 0% 2%;">
+      <i class="fa fa-2x fa-trash" aria-hidden="true"></i>
+    </a>    
+  </div>
+  <div class="progress disabled">
+  </div>
+</div>
+<div class="object-content section-content">
+  <div class="menu-information">
+    <div class="object-information list-group">
+      <span href="#" class="list-group-item active">    
+	Object
+	<span class="pull-right" id="slide-submenu">
+          <i class="fa fa-fw fa-cube" aria-hidden="true"></i>
+	</span>
+      </span>
+      <a href="{{ url_for('customers', cid=obj.customer.id )}}"
+	 class="list-group-item" style="text-align: center">
+	<img class="img-circle fa" src="{{ obj.customer.logo }}"/>
+	{{ obj.customer.name }}
+      </a>
+      <span href="#" class="list-group-item">
+	<i class="fa fa-fw fa-cube"></i>
+	{{ obj.name }}
+      </span>
+    </div>
+    <div class="object-menu list-group nav nav-tabs" data-tabs="tabs">
+      <span href="#" class="list-group-item active">    
+	Menu
+	<span class="pull-right" id="slide-submenu">
+          <i class="fa fa-fw fa-bars" aria-hidden="true"></i>
+	</span>
+      </span>
+      <a href="#object-details" data-toggle="tab" class="list-group-item">
+	<i class="fa fa-fw fa-sliders" aria-hidden="true"></i>
+	Details
+      </a>
+      <a href="#object-reports" data-toggle="tab" class="list-group-item disabled">
+	<i class="fa fa-fw fa-pie-chart" aria-hidden="true"></i>
+	Reports
+      </a>
+      <a href="#object-calendar" data-toggle="tab" class="list-group-item">
+	<i class="fa fa-fw fa-calendar" aria-hidden="true"></i>
+	Calendar
+      </a>
+      <a href="#object-changes" data-toggle="tab" class="list-group-item">
+	<i class="fa fa-fw fa-tasks" aria-hidden="true"></i>
+	Changes
+      </a>
+    </div>
+  </div>
+  <div class="object-tab-content tab-content">
+    <div id="object-details" class="tab-subcontent tab-pane fade in active">
+      <div class="section-details-content jumbotron" 
+	   style="height:100% !important;margin:0px;padding: 2%;
+		  border: 1px solid #e4e4e4;">
+	<div class="header" style="width:100%;position:relative;height:17%">
+	  <div class="subheader"
+	       style="float:left;padding:0.5%;max-height:100%;width:92%;
+	    	      top:50%;position:relative;transform:translateY(-50%);
+	    	      max-height: 100%;">
+	    <div class="title"
+		 style="font-size: 32px; font-weight: bold;
+			text-align: left; margin: 0px;">
+	      <i class="fa fa-fw fa-cube" aria-hidden="true"></i>
+	      {{ obj.name }}
+	    </div>
+	    <div class="info">
+	      Created by 
+	      <a href="{{ url_for('profile', userid=session.user.id) }}">
+		<strong>{{ session.user.displayname }}</strong>
+	      </a>
+	      about <strong>1 year ago</strong>.
+	      Updated by
+	      <a href="{{ url_for('profile', userid=session.user.id) }}">
+		<strong>{{ session.user.displayname }}</strong>
+	      </a>	      
+	      about <strong>5 months ago</strong>.
+	    </div>
+	  </div>
+	</div>
+	<hr class="my-4" style="margin: 1% 0%;">
+	<div class="details" style="height: 24%;">
+	  <form class="form-horizontal"
+		style="position:relative;max-height:100%;width:100%;
+		       overflow:auto;padding:0%;top:50%;
+		       transform:translateY(-50%);">
+	    <div class="form-entry col-md-6">
+	      <label class="col-md-4 form-item control-label">
+		<i class="fa fa-fw fa-info" aria-hidden="true"></i>
+		Status
+	      </label>
+	      <div class="col-md-8 form-group form-item">
+		<p class="form-control-static pull-right">
+		  {{ obj.status }}
+		</p>
+	      </div>
+	    </div>
+	    <div class="form-entry col-md-6">
+	      <label class="col-md-4 form-item control-label">
+		<i class="fa fa-fw fa-id-card" aria-hidden="true"></i>
+		Customer
+	      </label>
+	      <div class="col-md-8 form-group form-item">
+		<p class="form-control-static pull-right">
+		  <a href="{{ url_for('customers', cid=obj.customer.id )}}"
+		     alt="{{ obj.customer.name }}" 
+		     style="text-decoration: none;">
+		    <img class="fa fa-fw img-circle" 
+			 src="{{ obj.customer.logo }}" 
+			 alt="{{ obj.customer.name }}"/>
+		    {{ obj.customer.name }}
+		  </a>
+		</p>
+	      </div> 
+	    </div>
+	    <div class="form-entry col-md-6">
+	      <label class="col-md-4 form-item control-label">
+		<i class="fa fa-fw fa-info" aria-hidden="true"></i>
+		Type
+	      </label>
+	      <div class="col-md-8 form-group form-item">
+		<p class="form-control-static pull-right">
+		  {{ obj.type }}
+		</p>
+	      </div>
+	    </div>
+	  </form>
+	</div>
+	<hr class="my-4" style="margin: 1% 0%;">
+	<div class="details-lg" style="height: 53.5%;">
+	  <ul id="details-tabs" class="nav nav-tabs" data-tabs="tabs" 
+	      style="min-height:10%;max-height:15%;">
+	    <li class="active">
+	      <a data-toggle="tab" href="#object-description">
+		<i class="fa fa-fw fa-info"></i>
+		Description
+	      </a>
+	    </li>
+	    <li class="disabled">
+	      <a data-toggle="tab" href="#object-comments">
+		<i class="fa fa-fw fa-comments"></i>
+		Comments
+	      </a>
+	    </li>
+	    <li class="disabled">
+	      <a data-toggle="tab" href="#object-history">
+		<i class="fa fa-fw fa-history"></i>
+		History
+	      </a>
+	    </li>
+	    <li>
+	      <a data-toggle="tab" href="#object-related">
+		<i class="fa fa-fw fa-cubes"></i>
+		Related
+	      </a>
+	    </li>
+	    <li class="disabled">
+	      <a data-toggle="tab" href="#object-watchers">
+		<i class="fa fa-fw fa-star"></i>
+		Watchers
+	      </a>
+	    </li>
+	  </ul>
+	  <div class="desc-tab-content tab-content" 
+	       style="min-height:86.5%;max-height:87.5%;margin: 0%;
+		      width: 100%;padding-bottom:0.5%">
+	    <div id="object-description" class="tab-pane fade in active"
+		 style="height:100%;width:100%;position:relative;
+			background-color:white;border: 1px solid #ddd;
+			padding:0% 1%;border-radius:5px;">
+	      <div class="form-group" 
+		   style="height: 100%;padding: 2% 0%;margin: 0%;">
+		<label class="col-md-2 control-label" 
+		       style="text-align: right;">
+		  Description
+		</label>
+		<div class="col-md-10" style="height: 100%;">
+		  <textarea id="object-desc-content" class="form-control" 
+			    spellcheck="true" readonly="readonly" wrap="soft"
+			    style="resize:none;width:100%;height:100%;
+				   overflow-x:hidden;word-wrap:break-word;"
+			    >{{ obj.notes }}</textarea>
+		</div>
+	      </div>
+	    </div>
+	    <div id="object-comments" class="tab-pane fade in">
+	      <div id="feeds" class="feeds"
+		   style="height: 50%;padding-top:1%">
+	      </div>
+	    </div>
+	    <div id="object-history" class="tab-pane fade in">
+	    </div>
+	    <div id="object-related" class="tab-pane fade in"
+	     style="height:100%;width:100%;position:relative;
+		    background-color:white;border: 1px solid #ddd;
+		    padding:0% 1%;border-radius:5px;">
+	      <table id="objrel-table" data-show-toggle="false"
+                     data-show-toggle="false" data-show-export="false"
+                     data-show-columns="false" data-show-multi-sort="true"
+                     data-sort-name="matches" data-pagination="true"
+                     data-toggle="table" data-search="true"
+                     data-show-footer="false" data-page-size="25"
+                     data-escape="false" data-side-pagination="server"
+		     data-query-params="ObjRelParams" 
+		     data-show-refresh="true" data-row-style="rowStyle"
+		     data-url="{{ url_for('api_objects_all') }}?"
+		     data-response-handler="ObjectsResponseHandler"
+		     class="table table-hover table-striped table-compact
+			    table-condensed table-autosize">
+		<thead>
+		  <tr>
+		    <th data-field="id" data-align="center"
+			data-sortable="true" data-valign="middle"
+			data-visible="false">
+		      #
+		    </th>
+		    <th data-field="name" data-valign="middle"
+			data-formatter="ObjectsFormatterName">
+		      <i class="fa fa-sort-amount-desc fa-fw"></i>
+		      Name
+		    </th>
+		    <th data-field="status" data-valign="middle"
+			data-formatter="ObjectsFormatterStatus">
+		      <i class="fa fa-info fa-fw"></i>
+		      Status
+		    </th>
+		    <th data-field="type" data-valign="middle"
+			data-formatter="ObjectsFormatterType">
+		      <i class="fa fa-info fa-fw"></i>
+		      Type
+		    </th>
+		    <th data-field="matches" data-valign="middle">
+		      <i class="fa fa-fw fa-star"></i>
+		      Matches
+		    </th>
+		  </tr>
+		</thead>
+		<tbody>
+		</tbody>
+	      </table>
+	    </div>
+	  </div>
+	</div>
+      </div>
+    </div>
+    <div id="object-calendar" class="tab-subcontent tab-pane fade in">
+      <div id="object-calendar-item"></div>
+    </div>
+    <div id="object-changes" class="tab-subcontent tab-pane fade in">
+      <div id="objchg-toolbar" class="toolbar">
+      </div>
+      <table id="objchg-table"
+             data-show-toggle="false" data-show-export="false"
+             data-show-columns="true" data-show-multi-sort="true"
+             data-sort-name="id" data-pagination="true"
+             data-toggle="table" data-search="true"
+             data-show-footer="false" data-page-size="50"
+             data-escape="false" data-side-pagination="server"
+	     data-query-params="ObjChgParams" 
+	     data-show-refresh="true"
+	     data-url="{{ url_for('api_changes_all') }}?"
+	     data-response-handler="ObjChgResponseHandler"
+             class="table-hover table-striped table-compact table-responsive
+                    table-condensed table-autosize">
+	<thead>
+	  <tr>
+	    <th data-field="select" data-checkbox="true">
+	      <i class="fa fa-fw fa-question"></i>
+	      Select
+	    </th>
+	    <th data-field="id" data-align="center"
+		data-sortable="true" data-valign="middle"
+		data-formatter="ChangesFormatterID">
+	      <i class="fa fa-fw fa-key"></i>
+	      #
+	    </th>
+            <th data-field="project" data-valign="middle"
+		data-align="center" data-sortable="true">
+              <i class="fa fa-briefcase fa-fw"></i>
+              Project
+            </th>
+            <th data-field="status" data-valign="middle"
+		data-align="center" data-sortable="true">
+              <i class="fa fa-info fa-fw"></i>
+              Status
+            </th>
+            <th data-field="priority" data-valign="middle" 
+		data-align="center" data-sortable="true">
+              <i class="fa fa-bolt fa-fw"></i>
+              Priority
+            </th>
+            <th data-field="title" data-valign="middle"
+		data-sortable="true" data-formatter="ChangesFormatterTitle">
+              <i class="fa fa-sort-amount-desc fa-fw"></i>
+              Title
+            </th>
+            <th data-field="updated_on" data-align="center" 
+		data-valign="middle" data-sortable="true"
+		data-formatter="ChangesFormatterDate">
+              <i class="fa fa-calendar fa-fw"></i>
+              Updated
+            </th>
+	  </tr>
+	</thead>
+	<tbody>
+	</tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block modals %}
+{% include "modals/object.html" %}
+{% endblock %}
+
+{% block scripts %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.css" rel="stylesheet">
+<link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.css" rel="stylesheet">
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.js"></script>
+<script src="/pichai/static/extras/bootstrap-confirmation/js/bootstrap-confirmation.min.js"></script>
+<link href="/pichai/static/extras/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
+<script src="/pichai/static/extras/bootstrap-select/js/bootstrap-select.min.js"></script>
+<link href="/pichai/static/extras/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+<script src="/pichai/static/extras/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+<script>
+    $(document).ready(function () {
+	var calendar = '#object-calendar-item';
+	$(calendar).fullCalendar({
+	    height: calendar_height(calendar),
+	    header: {
+		left: 'prevYear,prev,today,next,nextYear',
+		center: 'title',
+		right: 'month,agendaWeek,agendaDay,listYear'
+	    },
+	    defaultView: 'month',
+	    firstDay: 0,
+	    aspectRatio: 2,
+	    businessHours: {
+		dow: [ 1, 2, 3, 4, 5 ],
+		start: '07:00',
+		end: '17:00',
+	    },
+	    windowResize: function(view) {
+		$(this).fullCalendar('option', 
+				     'height',
+				     calendar_height(calendar));
+	    },
+	    events: function(start, end, timezone, callback) {
+		$.ajax({
+		    url: "{{url_for('api_calendar_objects') }}?id={{ obj.id }}",
+		    dataType: 'json',
+		    data: {
+			start: start.format("YYYY-MM-DD"),
+			end: end.format("YYYY-MM-DD"),
+		    },
+		    success: function(e) {
+			var events = [];
+			var data = e['data'];
+			for(c in data['changes']) {
+			    events.push({
+				id: data['changes'][c].id,
+				title: data['changes'][c].number,
+				start: Date.parse(data['changes'][c].mw_start),
+				end: Date.parse(data['changes'][c].mw_end),
+				url: "{{ url_for('changes') }}/" + data['changes'][c].id,
+				color: '#FFB347', // #FFB347 #77DD77 #AEC6CF
+			    });
+			};
+			callback(events);
+		    }
+		});
+	    },
+	    timeFormat: 'HH:mm A',
+	    eventMouseover: function (data, event, view) {
+		dateformat = "YYYY/MM/DD hh:mm A [( ]z[ )]";
+		tooltip ='<div class="tooltiptopicevent"';
+                tooltip+='style="width:auto;height:auto;background:black;color: #fff;';
+                tooltip+='position:absolute;z-index:10001;border-radius: 6px;opacity:0.8;';
+                tooltip+='padding:1%;line-height: 200%;">';
+		tooltip+='title: ' + data.title + '</br>';
+		tooltip+='start: ' + data.start.format(dateformat)+'</br>';
+		tooltip+='end: ' + data.end.format(dateformat) + '</br>';
+		tooltip+='----------';
+		tooltip+='----------';
+		tooltip+='</div>';
+		$("body").append(tooltip);
+		$(this).mouseover(function (e) {
+                    $(this).css('z-index', 10000);
+                    $('.tooltiptopicevent').fadeIn('500');
+                    $('.tooltiptopicevent').fadeTo('10', 1.9);
+		}).mousemove(function (e) {
+                    $('.tooltiptopicevent').css('top', e.pageY + 10);
+                    $('.tooltiptopicevent').css('left', e.pageX + 5);
+		});
+		
+		
+            },
+            eventMouseout: function (data, event, view) {
+		$(this).css('z-index', 8);	
+		$('.tooltiptopicevent').remove();
+		
+            },
+	});
+	$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            $(calendar).fullCalendar('render');
+            autosize_tables();
+	    jqlisteners();
+	});
+	$(window).resize(function () {
+            autosize_tables();
+	    jqlisteners();
+	});
+	$('.modal').on('shown.bs.modal', function(){
+	    autosize_tables();
+	    jqlisteners();
+	});
+	$('.modal').on('hidden.bs.modal', function(){
+            $('.modal').find('.modal-title').html('New');
+            var forms = $(this).find('form');
+            forms.each(function(row){
+		forms[row].reset();
+            });
+            var selectpickers = $(this).find('.selectpicker');
+            selectpickers.each(function(row){
+		$(selectpickers[row]).selectpicker('refresh');
+            });
+	});
+	$(".select-date").datetimepicker({
+            showTodayButton: true,
+            showClose: true,
+            format: 'YYYY/MM/DD HH:mm',
+        });
+       	$("select[id=customer]").on('loaded.bs.select', function (e) {
+	    load_select_customers($(this));
+	});
+       	$("select[id=status]").on('loaded.bs.select', function (e) {
+	    load_select_config_objects_status($(this));
+	});	
+       	$("select[id=type]").on('loaded.bs.select', function (e) {
+	    load_select_config_objects_types($(this));
+	});	
+	autosize_tables();
+	jqlisteners();
+    });
+{% include "js/common.js" %}
+{% include "js/object.js" %}
+function jqlisteners() {
+    jqlisteners_object();
+    $(".change-open").confirmation({
+	onConfirm: function(e) {
+	    var change = $(this).attr('chg');
+	    window.open(
+		"{{ url_for('changes') }}/" + change,
+		'_blank');
+	},
+	placement: 'left',
+	btnOkLabel: 'Yes',
+	btnOkClass: 'btn btn-sm btn-primary',
+	btnOkIcon: 'fa fa-fw fa-check',
+	btnCancelLabel: 'No',
+	btnCancelClass: 'btn btn-sm btn-danger',
+	btnCancelIcon: 'fa fa-fw fa-remove',
+    });
+    $(".chgobj-add").confirmation({
+	onConfirm: function(e) {
+	    var change = $(this).attr('chg');
+	    var object = $(this).attr('obj');
+	    var url = "{{ url_for('api_objects') }}?id=" + object;
+	    url += +"&change=+" + change;
+	    $.ajax({
+		async: true,
+                type: "PUT",
+                url: url,
+                success: function (e) {
+		    var listdel = {'field': 'id', 'values': [object] };
+		    console.log(listdel, object);
+		    $('#chgobj-table').bootstrapTable('refresh');
+                    $('#chgobj-search-table').bootstrapTable('refresh');
+		},
+            });
+	},
+	placement: 'top',
+	btnOkLabel: 'Yes',
+	btnOkClass: 'btn btn-sm btn-primary',
+	btnOkIcon: 'fa fa-fw fa-check',
+	btnCancelLabel: 'No',
+	btnCancelClass: 'btn btn-sm btn-danger',
+	btnCancelIcon: 'fa fa-fw fa-remove',
+    });
+    $(".chgobj-del").confirmation({
+	onConfirm: function(e) {
+	    var change = $(this).attr('chg');
+	    var object = $(this).attr('obj');
+	    var url = "{{url_for('api_objects')}}?id=" + object;
+	    url += "&change=-" + change;
+	    $.ajax({
+		async: true,
+                type: "PUT",
+                url: url,
+                success: function (e) {
+		    $('#chgobj-table').bootstrapTable('refresh');
+		},
+            });
+	},
+	placement: 'top',
+	btnOkLabel: 'Yes',
+	btnOkClass: 'btn btn-sm btn-primary',
+	btnOkIcon: 'fa fa-fw fa-check',
+	btnCancelLabel: 'No',
+	btnCancelClass: 'btn btn-sm btn-danger',
+	btnCancelIcon: 'fa fa-fw fa-remove',
+    });
+    $(".chgobj-open").confirmation({
+	onConfirm: function(e) {
+	    var object = $(this).attr('obj');
+	    window.open(
+		"{{ url_for('objects') }}/" + object,
+		'_blank');
+	},
+	placement: 'top',
+	btnOkLabel: 'Yes',
+	btnOkClass: 'btn btn-sm btn-primary',
+	btnOkIcon: 'fa fa-fw fa-check',
+	btnCancelLabel: 'No',
+	btnCancelClass: 'btn btn-sm btn-danger',
+	btnCancelIcon: 'fa fa-fw fa-remove',
+    });
+}
+function rowStyle(row, index) {
+    if ( row['status'] == 'False' ) {
+    return {
+        css: {"text-decoration": "line-through"}
+    };
+    } else {
+    return {
+        css: {"text-decoration": "none"}
+    };
+    }
+}
+function ObjChgParams(params) {
+    params.type   = 'only';
+    params.filter = 'object';
+    params.value  = '{{ obj.id }}';
+    return params
+}
+function ObjChgResponseHandler(res) {
+    var data = [];
+    for(r in res.data) {
+	var row = res.data[r];
+	data.push({
+	    status: row.status,
+	    id: row.id,
+	    project: row.project.name,
+	    priority: row.priority,
+	    title: row.title,
+	    updated_on: row.updated_on,
+	});
+    };
+    return {
+	total: res.total,
+	rows: data,
+    }
+}
+function ObjRelParams(params) {
+    params.type   = 'related';
+    params.filter = 'object';
+    params.value  = '{{ obj.id }}';
+    return params
+}
+function ChangesFormatterID(value, row) {
+    var html = ""
+    html += '<a href="{{ url_for('changes') }}/' + row.id + '">';
+    html += row.id;
+    html += '</a>';
+    return html;
+}
+function ChangesFormatterTitle(value, row) {
+    var html = ""
+    html += '<a href="{{ url_for('changes') }}/' + row.id + '">';
+    html += row.title;
+    html += '</a>';
+    return html;
+}
+function ChangesFormatterDate(value, row) {
+    return moment(Date.parse(value)).format("YYYY-MM-DD hh:mm");
+}
+</script>
+{% endblock %}

@@ -1,0 +1,494 @@
+{% extends "base.html" %}
+
+{% block title %}Change #{{ change.id }}{% endblock %}
+
+{% block body %}
+<div class="change-header section-header">
+  <div class="title">
+    <i class="fa fa-fw fa-tasks" aria-hidden="true"></i>
+    Changes: #{{ change.id }}
+  </div>
+  <div class="toolbar">
+    <a id="change-watch" href="#change-watch" class="button disabled"
+       data-id="{{ change.id }}"
+       style="padding: 0% 2%;outline: none;text-decoration:none;">
+      <i class="fa fa-2x fa-star" aria-hidden="true"></i>
+    </a>    
+    <a id="change-load" href="#change-load" class="button disabled" 
+       data-id="{{ change.id }}"
+       style="padding: 0% 2%;outline: none;text-decoration:none;">
+      <i class="fa fa-2x fa-refresh" aria-hidden="true"></i>
+    </a>    
+    <a id="change-edit" href="#change-edit" data-id="{{ change.id }}"
+       style="padding: 0% 2%;outline: none;text-decoration:none;">
+      <i class="fa fa-2x fa-pencil" aria-hidden="true"></i>
+    </a>    
+    <a id="change-delete" href="#change-delete" class="button"
+       data-chg="{{ change.id }}"
+       data-toggle="confirmation" data-container="body">
+      <i class="fa fa-2x fa-trash" aria-hidden="true"></i>
+    </a>    
+  </div>
+  <div class="status progress">
+  </div>
+</div>
+<div class="change-content section-content">
+  <div class="menu-information">
+    <div class="change-information list-group">
+      <span href="#" class="list-group-item active">    
+	Information
+	<span class="pull-right" id="slide-submenu">
+          <i class="fa fa-fw fa-info" aria-hidden="true"></i>
+	</span>
+      </span>
+      <a href="{{ url_for('customers', cid=change.project.customer.id )}}"
+	 class="list-group-item" style="text-align: center">
+	<img class="img-circle fa" src="{{ change.project.customer.logo }}"/>
+	{{ change.project.customer.name }}
+      </a>      
+      <a href="{{ url_for('projects', pid=change.project.id) }}"
+	 class="list-group-item">
+	<i class="fa fa-fw fa-briefcase" aria-hidden="true"></i>
+	{{ change.project.name }}
+      </a>
+      <div class="list-group-item">
+	<i class="fa fa-fw fa-files-o" aria-hidden="true"></i>
+	Default
+      </div>
+      <div class="list-group-item">
+	<i class="fa fa-fw fa-calendar" aria-hidden="true"></i>
+	{{ 
+	dformat(change.mw_end-change.mw_start, '{hours:0>2}:{minutes:0>2}') 
+	}}
+      </div>
+    </div>
+  </div>
+  <div class="change-content tab-content jumbotron" 
+       style="width: 83%;float: left;height: 97.5% !important;
+	      background-color: #eee;padding: 1.5%;">
+    <div class="header" style="height: 17%;width:100%;position: relative;">
+      <a class="requester-avatar" style="float: left;height: 100%;width: 8%;"
+	 href="{{ url_for('profile', userid=change.requester.id) }}">
+	<img class="fa fa-fw" src="{{ change.requester.avatar }}"
+	     style="height: auto; width: auto;top: 50%;left: 50%;
+		    position:relative; max-height: 100%;
+		    transform: translateX(-50%) translateY(-50%);
+		    border: 5px solid white;max-width: 100%;"
+	     alt="{{ change.requester.displayname }}"/>
+      </a>
+      <div class="subheader"
+	   style="float:left;padding:0.5%;max-height:100%;width:92%;
+		  top:50%;position:relative;transform:translateY(-50%);
+		  max-height: 100%;">
+	<div class="title"
+	     style="font-size: 24px; font-weight: bold; text-align: left;
+		    margin: 0px;">
+	  {{ change.title }}
+	</div>
+	<div class="info">
+	  Created by 
+	  <a href="{{ url_for('profile', userid=change.requester.id) }}">
+	    <strong>{{ change.requester.displayname }}</strong>
+	  </a>
+	  about <strong>{{ ago(change.created_on) }}</strong>.
+	  Updated about <strong>{{ ago(change.updated_on) }}</strong>.
+	</div>
+      </div>
+    </div>
+    <hr class="my-4" style="margin: 1% 0%;">
+    <div id="change-details" style="height: 24%;">
+      <form class="form-horizontal"
+	    style="position:relative;max-height:100%;width:100%;
+		   overflow:auto;padding:0%;top:50%;
+		   transform:translateY(-50%);">
+	<div class="form-entry col-md-6">
+	  <label class="col-md-4 form-item control-label">
+	    <i class="fa fa-fw fa-info" aria-hidden="true"></i>
+	    Status
+	  </label>
+	  <div class="col-md-8 form-group form-item">
+	    <p class="form-control-static pull-right">{{ change.status }}</p>
+	  </div>
+	</div>
+	<div class="form-entry col-md-6">
+	  <label class="col-md-4 form-item control-label">
+	    <i class="fa fa-fw fa-calendar" aria-hidden="true"></i>
+	    Start date
+	  </label>
+	  <div class="col-md-8 form-group form-item">
+	    <p class="form-control-static pull-right" 
+	       title="{{ ago(change.mw_start) }}">
+	      {{ dformat(change.mw_start, '%Y/%m/%d %H:%M %Z') }}
+	    </p>
+	  </div>
+	</div>
+	<div class="form-entry col-md-6">
+	  <label class="col-md-4 form-item control-label">
+	    <i class="fa fa-fw fa-bolt" aria-hidden="true"></i>
+	    Priority
+	  </label>
+	  <div class="col-md-8 form-group form-item">
+	    <p class="form-control-static pull-right">
+	      Normal
+	    </p>
+	  </div>
+	</div>
+	<div class="form-entry col-md-6">
+	  <label class="col-md-4 form-item control-label">
+	    <i class="fa fa-fw fa-calendar" aria-hidden="true"></i>
+	    Due date
+	  </label>
+	  <div class="col-md-8 form-group form-item">
+	    <p class="form-control-static pull-right"
+	       title="{{ ago(change.mw_end) }}">
+	      {{ dformat(change.mw_end, '%Y/%m/%d %H:%M') }}
+	    </p>
+	  </div>
+	</div>
+	<div class="form-entry col-md-6">
+	  <label class="col-md-4 form-item control-label">
+	    <i class="fa fa-fw fa-user" aria-hidden="true"></i>
+	    Requester
+	  </label>
+	  <div class="col-md-8 form-group form-item">
+	    <p class="form-control-static pull-right">
+	      <a href="{{ url_for('profile', userid=change.requester.id) }}"
+		 alt="{{ change.requester.displayname }}" 
+		 style="text-decoration: none;">
+		<img class="fa fa-fw img-circle" 
+		     src="{{ change.requester.avatar }}" 
+		     alt="{{ change.requester.displayname }}"/>
+		{{ change.requester.displayname }}
+	      </a>
+	    </p>
+	  </div>	  
+	</div>
+	<div class="form-entry col-md-6">
+	  <label class="col-md-4 form-item control-label">
+	    <i class="fa fa-fw fa-bank" aria-hidden="true"></i>
+	    Rate
+	  </label>
+	  <div class="col-md-8 form-group form-item">
+	    <p class="form-control-static pull-right">
+	      {{ change.rate }}
+	    </p>
+	  </div>
+	</div>
+	<div class="form-entry col-md-6">
+	  <label class="col-md-4 form-item control-label">
+	    <i class="fa fa-fw fa-link" aria-hidden="true"></i>
+	    Reference
+	  </label>
+	  <div class="col-md-8 form-group form-item">
+	    <p class="form-control-static pull-right">
+	      {% if change.url %}
+	      <a href="{{ change.url }}" style="text-decoration: none;">
+		<i class="fa fa-fw fa-link" aria-hidden="true"></i>
+	      </a>
+	      {% endif %}
+	      {{ change.number }}
+	    </p>
+	  </div>
+	</div>
+	<div class="form-entry col-md-6">
+	  <label class="col-md-4 form-item control-label">
+	    <i class="fa fa-fw fa-book" aria-hidden="true"></i>
+	    Invoice
+	  </label>
+	  <div class="col-md-8 form-group form-item">
+	    <p class="form-control-static pull-right">
+	      {% if change.invoice %}
+	      <a href="{{ url_for('invoices', iid=change.invoice.id) }}"
+		 style="text-decoration: none;">
+		#{{ change.invoice.id }}
+	      </a>
+	      {% else %}
+	      -
+	      {% endif %}
+	    </p>
+	  </div>
+	</div>
+      </form>
+    </div>
+    <hr class="my-4" style="margin: 1% 0%;">
+    <div id="change-details-lg" style="height: 53.5%;">
+      <ul id="change-tabs" class="nav nav-tabs" data-tabs="tabs" 
+	  style="min-height:10%;max-height:15%;">
+	<li class="active">
+	  <a data-toggle="tab" href="#change-description">
+	    <i class="fa fa-fw fa-info"></i>
+	    Description
+	  </a>
+	</li>
+	<li class="disabled">
+	  <a data-toggle="tab" href="#change-comments">
+	    <i class="fa fa-fw fa-comments"></i>
+	    Comments
+	  </a>
+	</li>
+	<li class="disabled">
+	  <a data-toggle="tab" href="#change-history">
+	    <i class="fa fa-fw fa-history"></i>
+	    History
+	  </a>
+	</li>
+	<li>
+	  <a data-toggle="tab" href="#change-members">
+	    <i class="fa fa-fw fa-group"></i>
+	    Members
+	  </a>
+	</li>
+	<li>
+	  <a data-toggle="tab" href="#change-objects">
+	    <i class="fa fa-fw fa-cubes"></i>
+	    Objects
+	  </a>
+	</li>
+	<li class="disabled">
+	  <a data-toggle="tab" href="#change-watchers">
+	    <i class="fa fa-fw fa-star"></i>
+	    Watchers
+	  </a>
+	</li>
+      </ul>
+      <div class="change-tab-content tab-content" 
+	   style="min-height:86.5%;max-height:87.5%;margin: 0%;
+		  width: 100%;padding-bottom:0.5%">
+	<div id="change-description" class="tab-pane fade in active"
+	     style="height:100%;width:100%;position:relative;
+		    background-color:white;border: 1px solid #ddd;
+		    padding:0% 1%;border-radius:5px;">
+	  <div class="form-group" 
+	       style="height: 100%;padding: 2% 0%;margin: 0%;">
+	    <label class="col-md-2 control-label" style="text-align: right;">
+	      Description
+	    </label>
+	    <div class="col-md-10" style="height: 100%;">
+	      <textarea id="change-desc-content" class="form-control" 
+			spellcheck="true" readonly="readonly" wrap="soft"
+			style="resize:none;width:100%;height:100%;
+			       overflow-x:hidden;word-wrap:break-word;"
+			>{{ change.description }}</textarea>
+	    </div>
+	  </div>
+	</div>
+	<div id="change-comments" class="tab-pane fade in">
+	</div>
+	<div id="change-history" class="tab-pane fade in">
+	</div>
+	<div id="change-members" class="tab-pane fade in"
+	     style="height:100%;width:100%;position:relative;
+		    background-color:white;border: 1px solid #ddd;
+		    padding:0% 1%;border-radius:5px;">
+	  <div id="chgmbr-toolbar">
+	    <button class="btn btn-primary" type="button" data-toggle="modal"
+		    data-target="#ModalChgMbrSearch"
+		    aria-haspopup="true" aria-expanded="false">
+              <i class="fa fa-fw fa-plus"></i>
+	    </button>
+	  </div>
+	  <table id="chgmbr-table" data-show-toggle="false"
+                 data-show-toggle="false" data-show-export="false"
+                 data-show-columns="false" data-show-multi-sort="true"
+                 data-sort-name="displayname" data-pagination="true"
+                 data-toggle="table" data-search="true"
+                 data-show-footer="false" data-page-size="50"
+                 data-escape="false" data-side-pagination="server"
+		 data-query-params="ChgMbrParams" 
+		 data-show-refresh="true" data-row-style="rowStyle"
+		 data-url="{{ url_for('api_users_all') }}?"
+		 data-response-handler="ChgMbrResponseHandler"
+		 data-toolbar="#chgmbr-toolbar"
+		 class="table table-hover table-striped table-compact
+			table-condensed table-autosize">
+	    <thead>
+              <tr>
+		<th data-field="status" data-visible="false" 
+		    data-checkbox="true">
+		  <i class="fa fa-fw fa-question"></i>
+		  Status
+		</th>
+		<th data-field="id" data-align="center"
+		    data-sortable="true" data-valign="middle"
+		    data-visible="false">
+                  <i class="fa fa-fw fa-info"></i>
+		  #
+		</th>
+                <th data-field="displayname" data-align="left" 
+		    data-valign="middle" data-sortable="true"
+		    data-formatter="ChgMbrFormatterName">
+                  <i class="fa fa-sort-amount-desc fa-fw"></i>
+                  Name
+                </th>
+                <th data-field="team" data-align="left" data-valign="middle"
+		    data-valign="middle" data-sortable="true"
+		    data-formatter="ChgMbrFormatterTeam">
+                  <i class="fa fa-group fa-fw"></i>
+                  Team
+                </th>
+                <th data-field="manager" data-align="left"
+		    data-valign="middle" data-sortable="false"
+		    data-formatter="ChgMbrFormatterManager">
+                  <i class="fa fa-fw fa-user"></i>
+                  Manager
+                </th>
+                <th data-field="actions" data-align="center" 
+		    data-valign="middle"
+		    data-formatter="ChgMbrFormatterActions">
+                  <i class="fa fa-cogs fa-fw"></i>
+                  Actions
+                </th>
+              </tr>
+	    </thead>
+	    <tbody>
+	    </tbody>
+	  </table>
+	</div>
+	<div id="change-objects" class="tab-pane fade in"
+	     style="height:100%;width:100%;position:relative;
+		    background-color:white;border:1px solid #ddd;
+		    padding:0% 1%;border-radius:5px;">
+	  <div id="change-objects-toolbar">
+	    <button class="btn btn-primary" type="button" data-toggle="modal"
+		    data-target="#ModalChgObjSearch"
+		    aria-haspopup="true" aria-expanded="false">
+              <i class="fa fa-fw fa-plus"></i>
+	    </button>
+	  </div>
+	  <table id="chgobj-table"
+                 data-show-toggle="false" data-show-export="false"
+                 data-show-columns="false" data-show-multi-sort="true"
+                 data-sort-name="name" data-pagination="true"
+                 data-toggle="table" data-search="true"
+                 data-show-footer="false" data-page-size="50"
+                 data-escape="false" data-side-pagination="server"
+		 data-query-params="ChgObjParams" 
+		 data-show-refresh="true"
+		 data-url="{{ url_for('api_objects_all') }}?"
+		 data-response-handler="ChgObjResponseHandler"
+		 data-toolbar="#change-objects-toolbar"
+		 class="table table-hover table-striped table-compact
+			table-condensed table-autosize">
+	    <thead>
+              <tr>
+		<th data-field="status" data-visible="false" 
+		    data-checkbox="true">
+		  <i class="fa fa-fw fa-question"></i>
+		  Status
+		</th>
+		<th data-field="id" data-align="center"
+		    data-sortable="true" data-valign="middle"
+		    data-visible="false">
+                  <i class="fa fa-info fa-fw"></i>
+		  #
+		</th>
+                <th data-field="name" data-valign="middle"
+		    data-formatter="ChgObjFormatterName">
+                  <i class="fa fa-sort-amount-desc fa-fw"></i>
+                  Name
+                </th>
+                <th data-field="customer" data-align="center" 
+		    data-valign="middle"
+		    data-formatter="ChgObjFormatterCustomer">
+                  <i class="fa fa-id-card fa-fw"></i>
+                  Customer
+                </th>
+                <th data-field="actions" data-align="center" 
+		    data-valign="middle"
+		    data-formatter="ChgObjFormatterActions">
+                  <i class="fa fa-cogs fa-fw"></i>
+                  Actions
+                </th>
+              </tr>
+	    </thead>
+	    <tbody>
+	    </tbody>
+	  </table>  
+	</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block modals %}
+{% include "modals/change.html" %}
+{% include "modals/change_member.html" %}
+{% include "modals/change_object.html" %}
+{% endblock %}
+
+{% block scripts %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.css" rel="stylesheet">
+<link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.css" rel="stylesheet">
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.js"></script>
+<script src="/pichai/static/extras/bootstrap-confirmation/js/bootstrap-confirmation.min.js"></script>
+<link href="/pichai/static/extras/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
+<script src="/pichai/static/extras/bootstrap-select/js/bootstrap-select.min.js"></script>
+<link href="/pichai/static/extras/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+<script src="/pichai/static/extras/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+<script>
+    $(document).ready(function () {
+	$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            autosize_tables();
+	    jqlisteners();
+	});
+	$(window).resize(function () {
+            autosize_tables();
+	    jqlisteners();
+	});
+	$('.modal').on('shown.bs.modal', function(){
+	    autosize_tables();
+	    jqlisteners();
+	});
+	$('.modal').on('hidden.bs.modal', function(){
+            $('.modal').find('.modal-title').html('New');
+            var forms = $(this).find('form');
+            forms.each(function(row){
+		forms[row].reset();
+            });
+            var selectpickers = $(this).find('.selectpicker');
+            selectpickers.each(function(row){
+		$(selectpickers[row]).selectpicker('refresh');
+            });
+	});
+	$(".select-date").datetimepicker({
+            showTodayButton: true,
+            showClose: true,
+            format: 'YYYY/MM/DD HH:mm',
+        });
+	$("select[id=project]").on('loaded.bs.select', function (e) {
+	    load_select_projects($(this));
+	});
+	$("select[id=requester]").on('loaded.bs.select', function (e) {
+	    load_select_users($(this));
+	});
+	$("select[id=requester]").on('loaded.bs.select', function (e) {
+	    load_select_users($(this));
+	});
+	autosize_tables();
+	jqlisteners();
+    });
+{% include "js/common.js" %}
+{% include "js/change.js" %}
+{% include "modals/js/change_member.js" %}
+{% include "modals/js/change_object.js" %}
+function jqlisteners() {
+    jqlisteners_change();
+    jqlisteners_change_member();
+    jqlisteners_change_object();
+}
+function rowStyle(row, index) {
+    if ( row['status'] == false ) {
+	return {
+            css: {"text-decoration": "line-through"}
+	};
+    } else {
+	return {
+            css: {"text-decoration": "none"}
+	};
+    }
+}
+</script>
+{% endblock %}

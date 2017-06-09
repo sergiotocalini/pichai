@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block title %}Teams{% endblock %}
+
+{% block body %}
+<div class="teams-header section-header">
+  <div class="title">
+    <i class="fa fa-fw fa-group" aria-hidden="true"></i>
+    Teams
+  </div>
+</div>
+<div class="teams-content section-content" style="padding: 0% 1%;">
+  <div id="teams-toolbar" class="toolbar" style="max-height: 10%;padding: 0.5% 0%;">
+    <button class="btn btn-primary" type="button" data-toggle="modal"
+	    id="team-new" aria-haspopup="true" aria-expanded="false">
+      <i class="fa fa-fw fa-plus"></i>
+    </button>
+  </div>
+  <table id="teams-table"
+         data-show-toggle="false" data-show-export="false"
+         data-show-columns="false" data-show-multi-sort="true"
+         data-sort-name="id" data-pagination="true"
+         data-toggle="table" data-search="true"
+         data-show-footer="false" data-page-size="50"
+         data-escape="false" data-side-pagination="server"
+	 data-query-params="TeamsParams"
+	 data-show-refresh="true" data-show-header="true"
+	 data-url="{{ url_for('api_teams_all') }}?"
+	 data-response-handler="TeamsResponseHandler"
+	 data-toolbar="#teams-toolbar"
+	 data-reorderable-columns="true" data-show-pagination-switch="true"
+	 data-detail-view="true"
+	 data-detail-formatter="TeamsDetailFormatter"
+         class="table-hover table-striped table-compact table-responsive
+                table-condensed table-autosize">
+    <thead>
+      <tr>
+	<th data-field="id" data-align="center" title="ID"
+	    data-sortable="true" data-valign="middle" data-visible="false">
+	  #
+	</th>
+        <th data-field="name" data-valign="middle"
+	    data-align="center" data-sortable="true">
+          <i class="fa fa-group fa-fw"></i>
+          Team
+        </th>
+        <th data-field="manager" data-align="left" data-halign="center" 
+	    data-valign="middle" data-sortable="true"
+	    data-formatter="TeamsFormatterManager">
+          <i class="fa fa-id-badge fa-fw"></i>
+          Manager
+        </th>
+        <th data-field="actions" data-align="center" 
+	    data-valign="middle"
+	    data-formatter="TeamsFormatterActions">
+          <i class="fa fa-cogs fa-fw"></i>
+          Actions
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block modals %}
+{% include "modals/team.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+
+<link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.css" rel="stylesheet">
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.js"></script>
+
+<script src="/pichai/static/extras/bootstrap-confirmation/js/bootstrap-confirmation.min.js"></script>
+
+<link href="/pichai/static/extras/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
+<script src="/pichai/static/extras/bootstrap-select/js/bootstrap-select.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+	$(window).resize(function () {
+            autosize_tables();
+	    jqlisteners();
+	});
+	autosize_tables();
+	jqlisteners();
+    });
+function jqlisteners() {
+    $("#team-new").unbind();
+    $("#team-new").click(function(e) {
+	e.preventDefault();
+	var modal = "#ModalTeam";
+	$(modal).find('.modal-title').html("Team: New");
+        $(modal).modal('show');
+    });
+    $(".team-open").confirmation({
+	onConfirm: function(e) {
+	    var team = $(this).attr('team');
+	    window.open(
+		"{{ url_for('teams') }}/" + team,
+		'_blank');
+	},
+	placement: 'left',
+	btnOkLabel: 'Yes',
+	btnOkClass: 'btn btn-sm btn-primary',
+	btnOkIcon: 'fa fa-fw fa-check',
+	btnCancelLabel: 'No',
+	btnCancelClass: 'btn btn-sm btn-danger',
+	btnCancelIcon: 'fa fa-fw fa-remove',
+    });
+}
+function autosize_tables(selected) {
+    if ( selected == null || selected === '' ) {
+	var tables = $('body').find(".table-autosize");
+    } else {
+	var tables = $('body').find(selected);
+    }
+    tables.each(function(row){
+	var selector = $(tables[row]).attr('id');
+	selector = '#' + selector;
+	$(selector).on('post-body.bs.table', function () {
+	    jqlisteners();
+	});
+	$(selector).bootstrapTable({
+            height: table_height(selector),
+	});
+	$(selector).bootstrapTable('resetView', {
+            height: table_height(selector),
+	});
+    });
+}
+function table_height(table) {
+    var parent = $(table).parent().parent().parent().parent();
+    return parent.height();
+};
+function TeamsParams(params) {
+    return params
+}
+function TeamsResponseHandler(res) {
+    var data = [];
+    for(r in res.data) {
+	var row = res.data[r];
+	data.push({
+	    id: row.id,
+	    name: row.name,
+	    avatar: row.avatar,
+	    description: row.description,
+	    manager: row.manager.displayname,
+	    manager_avatar: row.manager.avatar,
+	    members: row.members,
+	    changes_open: 0,
+	});
+    };
+    return {
+	total: res.total,
+	rows: data,
+    }
+}
+function TeamsFormatterManager(value, row) {
+    html = '<img class="fa fa-fw img-circle" src="';
+    html+= row.manager_avatar + '"/> ';
+    html+= row.manager;
+    return html;
+}
+function TeamsFormatterActions(value, row) {
+    html ='<a class="team-open" data-toggle="confirmation" ';
+    html+='  data-team="'+ row.id +'" data-container="body" href="#open">';
+    html+=' <i class="fa fa-fw fa-search"></i>';
+    html+='</a>';
+    html+='<a class="team-export" data-toggle="confirmation" ';
+    html+='  data-team="'+ row.id +'" data-container="body" href="#export">';
+    html+=' <i class="fa fa-fw fa-file-archive-o"></i>';
+    html+='</a>';
+    html+='<a class="team-delete" data-toggle="confirmation" ';
+    html+='  data-team="'+ row.id +'" data-container="body" href="#delete">';
+    html+=' <i class="fa fa-fw fa-trash"></i>';
+    html+='</a>';
+    return html;
+}
+function TeamsDetailFormatter(index, row) {
+    html ='<div class="table-detail-row list-group-item row">'
+    html+=' <a class="table-detail-link" href="{{ url_for("teams") }}/';
+    html+=  row['id'] + '"></a>';
+    html+=' <div class="col-md-2">';
+    html+='<img class="img-circle" src="' + row['avatar'] + '" ';
+    html+='style="position: relative;height:125px;left:50%;transform:translateX(-50%);padding:1%;width:125px;"/>';
+    html+=' </div>';
+    html+=' <div class="col-md-7">';
+    html+='  <h2 class="list-group-item-heading">' + row['name'] + '</h2>';
+    html+='  <p class="list-group-item-text">' + row['description'] + '</p>';
+    html+=' </div>';
+    html+=' <div class="col-md-3 text-center">';
+    html+='  <h4 style="margin:2%;">' + row['members'].length + ' <small>members</small>' + '</h4>';
+    html+='  <h3 style="margin:5%;">';
+    html+='   <img class="fa fa-fw img-circle" src="'+row['manager_avatar']+'"/> ';
+    html+=    row['manager'];
+    html+='  </h3>'
+    html+='  <h4 style="margin: 2%;">';
+    html+=    row['changes_open'] + ' / ' + row['changes'] + ' <small>changes</small>';
+    html+='  </h4>';
+    html+=' </div>';
+    html+='</div>';
+    return html;
+}
+</script>
+{% endblock %}

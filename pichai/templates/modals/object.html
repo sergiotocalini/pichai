@@ -1,0 +1,95 @@
+<div id="ModalObject" class="modal fade" tabindex="-1"
+     role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-vcenter">
+    <div class="modal-dialog">
+      <div class="modal-content" style="width:55%;">
+        <div class="modal-header"
+             style="background-color: #337ab7; color: #fff;">
+          <button type="button" class="close"
+                  data-dismiss="modal" aria-hidden="true">
+            &times;
+          </button>
+          <h4 class="modal-title"></h4>
+        </div>
+        <div class="modal-body" style="max-height: 500px;">
+	  <form class="form" role="form" method="POST">
+            <fieldset id="fieldset">
+              <input class="col-md-12 form-control-static hidden" id="id">
+              <div class="row">
+                <div class="col-md-8 form-group">
+                  <label class="control-label" for="name">
+		    <i class="fa fa-fw fa-info"></i>
+                    Name
+                  </label>
+                  <input type="text" class="form-control" id="name"/>
+                </div>
+                <div class="col-md-4 form-group">
+                  <label class="control-label" for="status">
+		    <i class="fa fa-fw fa-bolt"></i>
+                    Status
+                  </label>
+                  <select class="selectpicker show-tick form-control"
+                          id="status" name="status">
+                  </select>
+                </div>
+	      </div>
+              <div class="row row-eq-height">
+		<div class="col-xs-6 col-md-8">
+		  <label class="control-label" for="notes">
+		    <i class="fa fa-info fa-fw"></i>
+		    Notes
+		  </label>
+		  <textarea id="notes" class="form-control" rows="9"
+			    spellcheck="true" wrap="soft"
+			    style="resize:none;overflow-x:hidden;word-wrap:break-word"
+			    ></textarea>
+		</div>
+		<div class="col-xs-12 col-md-4">
+                  <div class="col-md-12 form-group" style="padding:0px;">
+                    <label class="control-label" for="type">
+		      <i class="fa fa-fw fa-info"></i>
+                      Type
+                    </label>
+                    <select class="selectpicker show-tick form-control"
+                            id="type" name="type"
+                            data-live-search="true">
+                    </select>
+                  </div>
+		  <div class="col-md-12 form-group" style="padding:0px;">
+                    <label class="control-label" for="customer">
+		      <i class="fa fa-fw fa-id-card"></i>
+                      Customer
+                    </label>
+                    <select class="selectpicker show-tick form-control"
+                            id="customer" name="customer" title="..."
+                            data-live-search="true" data-container="body"
+			    data-size="auto">
+                    </select>
+		  </div>
+		  <div class="col-md-12 form-group" style="padding:0px;">
+                    <label class="control-label" for="url">
+		      <i class="fa fa-fw fa-link"></i>
+                      Remote
+                    </label>
+                    <input type="text" class="form-control" id="url"/>
+		  </div>		  
+		</div>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <div class="pull-right">
+            <button type="button" class="btn btn-default"
+                    data-dismiss="modal">
+              Close
+            </button>
+            <button type="button" class="btn btn-primary" id="object-save">
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,72 @@
+<div id="ModalChgMbrSearch" class="modal fade" tabindex="-1"
+     role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-vcenter">
+    <div class="modal-dialog">
+      <div class="modal-content" style="padding-bottom: 1%; width:60%;">
+        <div class="modal-header"
+             style="background-color: #337ab7; color: #fff;">
+          <button type="button" class="close"
+                  data-dismiss="modal" aria-hidden="true">
+            &times;
+          </button>
+          <h4 class="modal-title">Members</h4>
+        </div>
+        <div class="modal-body" style="height: 500px;">
+          <table id="chgmbr-search-table"
+                 data-show-toggle="false" data-show-export="false"
+                 data-show-columns="true" data-show-multi-sort="true"
+                 data-sort-name="displayname" data-pagination="true"
+                 data-toggle="table" data-search="true"
+                 data-show-footer="false" data-page-size="50"
+                 data-escape="false" data-side-pagination="server"
+		 data-query-params="ChgMbrSearchParams" 
+		 data-show-refresh="true" data-row-style="rowStyle"
+		 data-url="{{ url_for('api_users_all') }}?"
+		 data-response-handler="ChgMbrResponseHandler"
+                 class="table-hover table-striped table-compact
+                        table-condensed table-autosize">
+            <thead>
+              <tr>
+		<th data-field="status" data-visible="false" 
+		    data-checkbox="true">
+		  <i class="fa fa-fw fa-question"></i>
+		  Status
+		</th>
+		<th data-field="id" data-align="center"
+		    data-sortable="true" data-valign="middle"
+		    data-visible="false">
+		  #
+		</th>
+                <th data-field="displayname" data-align="left" data-valign="middle"
+		    data-formatter="ChgMbrFormatterName" data-sortable="true">
+                  <i class="fa fa-sort-amount-desc fa-fw"></i>
+                  Name
+                </th>
+                <th data-field="team" data-align="left" data-valign="middle"
+		    data-valign="middle" data-sortable="true"
+		    data-formatter="ChgMbrFormatterTeam">
+                  <i class="fa fa-sort-amount-desc fa-fw"></i>
+                  Team
+                </th>
+                <th data-field="manager" data-align="left" data-valign="middle"
+		    data-valign="middle" data-sortable="false"
+		    data-formatter="ChgMbrFormatterManager">
+                  <i class="fa fa-sort-amount-desc fa-fw"></i>
+                  Manager
+                </th>
+                <th data-field="actions" data-align="center" 
+		    data-valign="middle"
+		    data-formatter="ChgMbrSearchFormatterActions">
+                  <i class="fa fa-cogs fa-fw"></i>
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

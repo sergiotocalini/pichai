@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}Invoice #{{ invoice.id }}{% endblock %}
+
+{% block body %}
+<div class="invoice-header section-header">
+  <div class="title">
+    <i class="fa fa-fw fa-book" aria-hidden="true"></i>
+    Invoice: #{{ invoice.id }}
+  </div>
+</div>
+<div class="invoice-content section-content">
+  <div class="menu-information">
+    <div class="invoice-information list-group">
+      <span href="#" class="list-group-item active">
+	Invoice
+	<span class="pull-right" id="slide-submenu">
+          <i class="fa fa-fw fa-book" aria-hidden="true"></i>
+	</span>
+      </span>
+      <span href="#" class="list-group-item" style="text-align: center">
+	{{ invoice.issued_on }}
+      </span>
+    </div>
+    <div class="invoice-menu list-group nav nav-tabs" data-tabs="tabs">
+      <span href="#" class="list-group-item active">    
+	Menu
+	<span class="pull-right" id="slide-submenu">
+          <i class="fa fa-fw fa-bars" aria-hidden="true"></i>
+	</span>
+      </span>
+      <a href="#invoice-details" data-toggle="tab" class="list-group-item">
+	<i class="fa fa-fw fa-sliders" aria-hidden="true"></i>
+	Details
+      </a>
+      <a href="#invoice-calendar" data-toggle="tab" class="list-group-item">
+	<i class="fa fa-fw fa-calendar" aria-hidden="true"></i>
+	Calendar
+      </a>
+      <a href="#invoice-changes" data-toggle="tab" class="list-group-item">
+	<i class="fa fa-fw fa-tasks" aria-hidden="true"></i>
+	Changes
+      </a>
+    </div>
+  </div>
+  <div class="invoice-tab-content tab-content">
+    <div id="invoice-details" class="tab-subcontent tab-pane fade in active">
+    </div>
+    <div id="invoice-calendar" class="tab-subcontent tab-pane fade in">
+      <div id="invoice-calendar-item"></div>
+    </div>
+    <div id="invoice-changes" class="tab-subcontent tab-pane fade in">
+      <div id="invoice-changes-item"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.css" rel="stylesheet">
+<link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.css" rel="stylesheet">
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.js"></script>
+<script>
+    $(document).ready(function () {
+	var calendar = '#invoice-calendar-item';
+	$(calendar).fullCalendar({
+	    height: calendar_height(calendar),
+	    header: {
+		left: 'prev,next today',
+		center: 'title',
+		right: 'month,agendaWeek,agendaDay,listYear'
+	    },
+	    defaultView: 'month',
+	    firstDay: 0,
+	    aspectRatio: 2,
+	    businessHours: {
+		dow: [ 1, 2, 3, 4, 5 ],
+		start: '07:00',
+		end: '17:00',
+	    },
+	    windowResize: function(view) {
+		$(this).fullCalendar('option', 
+				     'height',
+				     calendar_height(calendar));
+	    },
+	    events: function(start, end, timezone, callback) {
+		$.ajax({
+		    url: "{{url_for('api_calendar_teams') }}?id={{ invoice.customer.id }}",
+		    dataType: 'json',
+		    data: {
+			start: start.format("YYYY-MM-DD"),
+			end: end.format("YYYY-MM-DD"),
+		    },
+		    success: function(e) {
+			var events = [];
+			var data = e['data'];
+			for(c in data['changes']) {
+			    events.push({
+				id: data['changes'][c].id,
+				title: data['changes'][c].number,
+				start: Date.parse(data['changes'][c].mw_start),
+				end: Date.parse(data['changes'][c].mw_end),
+				url: "{{ url_for('changes') }}/" + data['changes'][c].id,
+				color: '#FFB347', // #FFB347 #77DD77 #AEC6CF
+			    });
+			};
+			for(c in data['meetings']) {
+			    events.push({
+				id: data['meetings'][c].id,
+				title: data['meetings'][c].number,
+				start: Date.parse(data['meetings'][c].start),
+				end: Date.parse(data['meetings'][c].end),
+				url: "{{ url_for('changes') }}/" + data['meetings'][c].id,
+				color: '#3a87ad',
+			    });
+			};
+			callback(events);
+		    }
+		});
+	    },
+	    timeFormat: 'HH:mm A',
+	    eventMouseover: function (data, event, view) {
+		dateformat = "YYYY/MM/DD hh:mm A [( ]z[ )]";
+		tooltip ='<div class="tooltiptopicevent"';
+                tooltip+='style="width:auto;height:auto;background:black;color: #fff;';
+                tooltip+='position:absolute;z-index:10001;border-radius: 6px;opacity:0.8;';
+                tooltip+='padding:1%;line-height: 200%;">';
+		tooltip+='title: ' + data.title + '</br>';
+		tooltip+='start: ' + data.start.format(dateformat)+'</br>';
+		tooltip+='end: ' + data.end.format(dateformat) + '</br>';
+		tooltip+='----------';
+		tooltip+='----------';
+		tooltip+='</div>';
+		$("body").append(tooltip);
+		$(this).mouseover(function (e) {
+                    $(this).css('z-index', 10000);
+                    $('.tooltiptopicevent').fadeIn('500');
+                    $('.tooltiptopicevent').fadeTo('10', 1.9);
+		}).mousemove(function (e) {
+                    $('.tooltiptopicevent').css('top', e.pageY + 10);
+                    $('.tooltiptopicevent').css('left', e.pageX + 5);
+		});
+		
+		
+            },
+            eventMouseout: function (data, event, view) {
+		$(this).css('z-index', 8);	
+		$('.tooltiptopicevent').remove();
+		
+            },
+	});
+	$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            $(calendar).fullCalendar('render');
+            autosize_tables();
+	});
+	$(window).resize(function () {
+            autosize_tables();
+	});
+	$('.modal').on('hidden.bs.modal', function(){
+            $('.modal').find('.modal-title').html('New');
+            var forms = $(this).find('form');
+            forms.each(function(row){
+		forms[row].reset();
+            });
+            var selectpickers = $(this).find('.selectpicker');
+            selectpickers.each(function(row){
+		$(selectpickers[row]).selectpicker('refresh');
+            });
+	});
+	autosize_tables();
+//	jqlisteners();
+    });
+{% include "js/common.js" %}
+function rowStyle(row, index) {
+    if ( row['status'] == 'False' ) {
+    return {
+        css: {"text-decoration": "line-through"}
+    };
+    } else {
+    return {
+        css: {"text-decoration": "none"}
+    };
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+
+{% block title %}Changes{% endblock %}
+
+{% block body %}
+<div class="changes-header section-header">
+  <div class="title">
+    <i class="fa fa-fw fa-tasks" aria-hidden="true"></i>
+    Changes
+  </div>
+</div>
+<div class="changes-content section-content" style="padding: 0% 1%;">
+  <div id="changes-toolbar" class="toolbar">
+    <button class="btn btn-primary" type="button" data-toggle="modal"
+	    id="change-new" aria-haspopup="true" aria-expanded="false">
+      <i class="fa fa-fw fa-plus"></i>
+    </button>
+  </div>
+  <table id="changes-table"
+         data-show-toggle="false" data-show-export="false"
+         data-show-columns="true" data-show-multi-sort="true"
+         data-sort-name="id" data-pagination="true"
+         data-toggle="table" data-search="true"
+         data-show-footer="false" data-page-size="50"
+         data-escape="false" data-side-pagination="server"
+	 data-query-params="ChangesParams" 
+	 data-show-refresh="true" data-show-header="true"
+	 data-url="{{ url_for('api_changes_all') }}?"
+	 data-response-handler="ChangesResponseHandler"
+	 data-toolbar="#changes-toolbar"
+	 data-reorderable-columns="true"
+         class="table-hover table-striped table-compact table-responsive
+                table-condensed table-autosize">
+    <thead>
+      <tr>
+	<th data-field="select" data-checkbox="true">
+	  <i class="fa fa-fw fa-question"></i>
+	  Select
+	</th>
+	<th data-field="id" data-align="center" title="ID"
+	    data-sortable="true" data-valign="middle" 
+	    data-formatter="ChangesFormatterID">
+	  #
+	</th>
+        <th data-field="project" data-valign="middle" 
+	    data-align="center" data-sortable="true">
+          <i class="fa fa-briefcase fa-fw"></i>
+          Project
+        </th>
+        <th data-field="reference" data-align="center" 
+	    data-valign="middle" data-sortable="true" data-visible="false">
+          <i class="fa fa-link fa-fw"></i>
+          Reference
+        </th>
+        <th data-field="version" data-align="center" 
+	    data-valign="middle" data-sortable="true" data-visible="false">
+          <i class="fa fa-files-o fa-fw"></i>
+          Version
+        </th>
+        <th data-field="status" data-valign="middle" 
+	    data-align="center" data-sortable="true"
+	    data-formatter="ChangesFormatterStatus">
+          <i class="fa fa-info fa-fw"></i>
+          Status
+        </th>
+        <th data-field="priority" data-valign="middle"
+	    data-align="center" data-sortable="true"
+	    data-formatter="ChangesFormatterPriority">
+          <i class="fa fa-bolt fa-fw"></i>
+          Priority
+        </th>
+        <th data-field="title" data-valign="middle"
+	    data-sortable="false" data-formatter="ChangesFormatterTitle">
+          <i class="fa fa-sort-amount-desc fa-fw"></i>
+          Title
+        </th>
+        <th data-field="mw_start" data-align="center" 
+	    data-valign="middle" data-sortable="true" data-visible="false"
+	    data-formatter="ChangesFormatterDate">
+          <i class="fa fa-calendar fa-fw"></i>
+          Start
+        </th>
+        <th data-field="mw_end" data-align="center" 
+	    data-valign="middle" data-sortable="true" data-visible="false"
+	    data-formatter="ChangesFormatterDate">
+          <i class="fa fa-calendar fa-fw"></i>
+          Due
+        </th>
+        <th data-field="updated_on" data-align="center" 
+	    data-valign="middle" data-sortable="true"
+	    data-formatter="ChangesFormatterDate">
+          <i class="fa fa-calendar fa-fw"></i>
+          Updated
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block modals %}
+{% include "modals/change.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+
+<link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.css" rel="stylesheet">
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.js"></script>
+
+<link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.css" rel="stylesheet">
+<script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.js"></script>
+
+<script src="/pichai/static/extras/bootstrap-confirmation/js/bootstrap-confirmation.min.js"></script>
+
+<link href="/pichai/static/extras/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
+<script src="/pichai/static/extras/bootstrap-select/js/bootstrap-select.min.js"></script>
+
+<link href="/pichai/static/extras/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+<script src="/pichai/static/extras/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+	$(window).resize(function () {
+            autosize_tables();
+	    jqlisteners();
+	});
+	$('.modal').on('shown.bs.modal', function(){
+	    autosize_tables();
+	    jqlisteners();
+	});
+	$('.modal').on('hidden.bs.modal', function(){
+            $('.modal').find('.modal-title').html('New');
+            var forms = $(this).find('form');
+            forms.each(function(row){
+		forms[row].reset();
+            });
+            var selectpickers = $(this).find('.selectpicker');
+            selectpickers.each(function(row){
+		$(selectpickers[row]).selectpicker('refresh');
+            });
+	});
+	$(".select-date").datetimepicker({
+            showTodayButton: true,
+            showClose: true,
+            format: 'YYYY/MM/DD HH:mm',
+	    defaultDate: new Date(),
+        });
+	$("select[id=project]").on('loaded.bs.select', function (e) {
+	    load_select_projects($(this));
+	});
+	$("select[id=requester]").on('loaded.bs.select', function (e) {
+	    load_select_users($(this));
+	});
+	autosize_tables();
+	jqlisteners();
+    });
+{% include "js/common.js" %}
+{% include "js/change.js" %}
+function jqlisteners() {
+    jqlisteners_change();
+}
+function rowStyle(row, index) {
+    if ( row['status'] == 'False' ) {
+    return {
+        css: {"text-decoration": "line-through"}
+    };
+    } else {
+    return {
+        css: {"text-decoration": "none"}
+    };
+    }
+}
+function autosize_tables(selected) {
+    if ( selected == null || selected === '' ) {
+	var tables = $('body').find(".table-autosize");
+    } else {
+	var tables = $('body').find(selected);
+    }
+    tables.each(function(row){
+	var selector = $(tables[row]).attr('id');
+	selector = '#' + selector;
+	$(selector).on('post-body.bs.table', function () {
+	    jqlisteners();
+	});
+	$(selector).bootstrapTable({
+            height: table_height(selector),
+	});
+	$(selector).bootstrapTable('resetView', {
+            height: table_height(selector),
+	});
+    });
+}
+function calendar_height(calendar) {
+    var parent = $(calendar).parent();
+    return parent.height();
+};
+function table_height(table) {
+    var parent = $(table).parent().parent().parent().parent();
+    return parent.height();
+};
+function ChangesParams(params) {
+    return params
+}
+function ChangesResponseHandler(res) {
+    var changes_status = [];
+    var changes_priority = [];
+    $.ajax({
+	async: false,
+	type: "GET",
+	url: "{{url_for('api_configs_all')}}?search=CHANGES",
+	success: function (e) {
+	    for (item in e['data']) {
+		if (e['data'][item]['key'] == 'CHANGES_STATUS') {
+		    changes_status = e['data'][item]['value'];
+		} else if (e['data'][item]['key'] == 'CHANGES_PRIORITY') {
+		    changes_priority = e['data'][item]['value'];
+		}
+	    }
+	},
+    });
+    var data = [];
+    for(r in res.data) {
+	var row = res.data[r];
+	var status = {id: -1, name: "Unknown"};
+	var priority = {id: -1, name: "Unknown"};
+	for (s in changes_status) {
+	    if (changes_status[s]['id'] == row.status) {
+		status = changes_status[s];
+		break;
+	    }
+	}
+	for (p in changes_priority) {
+	    if (changes_priority[p]['id'] == row.priority) {
+		priority = changes_priority[p];
+		break;
+	    }	    
+	}
+	data.push({
+	    status: status,
+	    id: row.id,
+	    project: row.project.name,
+	    version: row.project.version,
+	    priority: priority,
+	    reference: row.number,
+	    title: row.title,
+	    mw_start: row.mw_start,
+	    mw_end: row.mw_end,
+	    updated_on: row.updated_on,
+	});
+    };
+    return {
+	total: res.total,
+	rows: data,
+    }
+}
+function ChangesFormatterID(value, row) {
+    var html = "";
+    html += '<a href="{{ url_for('changes') }}/' + row.id + '">';
+    html += row.id;
+    html += '</a>';
+    return html;
+}
+function ChangesFormatterTitle(value, row) {
+    var html = "";
+    html += '<a href="{{ url_for('changes') }}/' + row.id + '">';
+    html += row.title;
+    html += '</a>';
+    return html;
+}
+function ChangesFormatterStatus(value, row) {
+    var html = "";
+    html += row.status.name;
+    return html;
+}
+function ChangesFormatterPriority(value, row) {
+    var html = "";
+    html += row.priority.name;
+    return html;
+}
+function ChangesFormatterDate(value, row) {
+    return moment(Date.parse(value)).format("YYYY-MM-DD hh:mm");
+}
+</script>
+{% endblock %}

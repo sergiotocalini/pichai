@@ -1,0 +1,66 @@
+<div id="ModalChgObjSearch" class="modal fade" tabindex="-1"
+     role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-vcenter">
+    <div class="modal-dialog">
+      <div class="modal-content" style="padding-bottom: 1%; width:60%;">
+        <div class="modal-header"
+             style="background-color: #337ab7; color: #fff;">
+          <button type="button" class="close"
+                  data-dismiss="modal" aria-hidden="true">
+            &times;
+          </button>
+          <h4 class="modal-title">Objects</h4>
+        </div>
+        <div class="modal-body" style="height: 500px;">
+          <table id="chgobj-search-table"
+                 data-show-toggle="false" data-show-export="false"
+                 data-show-columns="true" data-show-multi-sort="true"
+                 data-sort-name="name" data-pagination="true"
+                 data-toggle="table" data-search="true"
+                 data-show-footer="false" data-page-size="50"
+                 data-escape="false" data-side-pagination="server"
+		 data-query-params="ChgObjSearchParams" 
+		 data-show-refresh="true"
+		 data-url="{{ url_for('api_objects_all') }}?"
+		 data-response-handler="ChgObjResponseHandler"
+                 class="table-hover table-striped table-compact
+                        table-condensed table-autosize">
+            <thead>
+              <tr>
+		<th data-field="status" data-visible="false" 
+		    data-checkbox="true">
+		  <i class="fa fa-fw fa-question"></i>
+		  Status
+		</th>
+		<th data-field="id" data-align="center"
+		    data-sortable="true" data-valign="middle"
+		    data-visible="false">
+		  #
+		</th>
+                <th data-field="name" data-valign="middle"
+		    data-formatter="ChgObjFormatterName">
+                  <i class="fa fa-sort-amount-desc fa-fw"></i>
+                  Name
+                </th>
+                <th data-field="customer" data-align="center" 
+		    data-valign="middle"
+		    data-formatter="ChgObjFormatterCustomer">
+                  <i class="fa fa-sort-amount-desc fa-fw"></i>
+                  Customer
+                </th>
+                <th data-field="actions" data-align="center" 
+		    data-valign="middle"
+		    data-formatter="ChgObjSearchFormatterActions">
+                  <i class="fa fa-cogs fa-fw"></i>
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

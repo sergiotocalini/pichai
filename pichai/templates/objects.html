@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Objects{% endblock %}
+
+{% block body %}
+<div class="objects-header section-header">
+  <div class="title">
+    <i class="fa fa-fw fa-cubes" aria-hidden="true"></i>
+    Objects
+  </div>
+</div>
+<div class="objects-content section-content" style="padding: 0% 1%;">
+  <div id="objects-toolbar" class="toolbar">
+    <button class="btn btn-primary" type="button" data-toggle="modal"
+	    data-target="#ModalObjectNew"
+	    aria-haspopup="true" aria-expanded="false">
+      <i class="fa fa-fw fa-plus"></i>
+    </button>
+  </div>
+  <table id="objects-table"
+         data-show-toggle="false" data-show-export="false"
+         data-show-columns="true" data-show-multi-sort="true"
+         data-sort-name="name" data-pagination="true"
+         data-toggle="table" data-search="true"
+         data-show-footer="false" data-page-size="50"
+         data-escape="false" data-side-pagination="server"
+	 data-query-params="ObjectsParams" 
+	 data-show-refresh="true"
+	 data-url="{{ url_for('api_objects_all') }}?"
+	 data-response-handler="ObjectsResponseHandler"
+	 data-toolbar="#objects-toolbar"
+         class="table-hover table-striped table-compact table-responsive
+                table-condensed table-autosize">
+    <thead>
+      <tr>
+	<th data-field="select" data-visible="false" 
+	    data-checkbox="true">
+	  <i class="fa fa-fw fa-question"></i>
+	  Select
+	</th>
+	<th data-field="id" data-align="center"
+	    data-sortable="true" data-valign="middle"
+	    data-visible="false">
+	  #
+	</th>
+        <th data-field="name" data-valign="middle"
+	    data-formatter="ObjectsFormatterName">
+          <i class="fa fa-sort-amount-desc fa-fw"></i>
+          Name
+        </th>
+        <th data-field="status" data-valign="middle"
+	    data-formatter="ObjectsFormatterStatus">
+          <i class="fa fa-info fa-fw"></i>
+          Status
+        </th>
+        <th data-field="type" data-valign="middle"
+	    data-formatter="ObjectsFormatterType">
+          <i class="fa fa-info fa-fw"></i>
+          Type
+        </th>
+        <th data-field="customer" data-align="center" 
+	    data-valign="middle" data-formatter="ObjectsFormatterCustomer">
+          <i class="fa fa-sort-amount-desc fa-fw"></i>
+          Customer
+        </th>
+        <th data-field="actions" data-align="center" 
+	    data-valign="middle"
+	    data-formatter="ObjectsFormatterActions">
+          <i class="fa fa-cogs fa-fw"></i>
+          Actions
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.css" rel="stylesheet">
+<link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.css" rel="stylesheet">
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.js"></script>
+<script src="/pichai/static/extras/bootstrap-confirmation/js/bootstrap-confirmation.min.js"></script>
+<script>
+    $(document).ready(function () {
+	$(window).resize(function () {
+            autosize_tables();
+	    jqlisteners();
+	});
+	$('.modal').on('shown.bs.modal', function(){
+	    autosize_tables();
+	    jqlisteners();
+	});
+	$('.modal').on('hidden.bs.modal', function(){
+            $('.modal').find('.modal-title').html('New');
+            var forms = $(this).find('form');
+            forms.each(function(row){
+		forms[row].reset();
+            });
+            var selectpickers = $(this).find('.selectpicker');
+            selectpickers.each(function(row){
+		$(selectpickers[row]).selectpicker('refresh');
+            });
+	});
+	autosize_tables();
+	jqlisteners();
+    });
+{% include "js/common.js" %}
+{% include "js/object.js" %}
+function jqlisteners() {
+    $(".object-open").confirmation({
+	onConfirm: function(e) {
+	    var obj = $(this).attr('obj');
+	    window.open(
+		"{{ url_for('objects') }}/" + obj,
+		'_blank');
+	},
+	placement: 'left',
+	btnOkLabel: 'Yes',
+	btnOkClass: 'btn btn-sm btn-primary',
+	btnOkIcon: 'fa fa-fw fa-check',
+	btnCancelLabel: 'No',
+	btnCancelClass: 'btn btn-sm btn-danger',
+	btnCancelIcon: 'fa fa-fw fa-remove',
+    });
+}
+function rowStyle(row, index) {
+    if ( row['status'] == 'False' ) {
+    return {
+        css: {"text-decoration": "line-through"}
+    };
+    } else {
+    return {
+        css: {"text-decoration": "none"}
+    };
+    }
+}
+</script>
+{% endblock %}

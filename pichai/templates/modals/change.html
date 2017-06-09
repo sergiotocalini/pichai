@@ -1,0 +1,162 @@
+<div id="ModalChange" class="modal fade" tabindex="-1"
+     role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-vcenter">
+    <div class="modal-dialog">
+      <div class="modal-content" style="width:55%;">
+        <div class="modal-header"
+             style="background-color: #337ab7; color: #fff;">
+          <button type="button" class="close"
+                  data-dismiss="modal" aria-hidden="true">
+            &times;
+          </button>
+          <h4 class="modal-title"></h4>
+        </div>
+        <div class="modal-body" style="max-height: 500px;">
+	  <form class="form" role="form" method="POST">
+            <fieldset id="fieldset">
+              <input class="col-md-12 form-control-static hidden" id="id">
+              <div class="row">
+                <div class="col-md-8 form-group">
+                  <label class="control-label" for="name">
+		    <i class="fa fa-fw fa-info"></i>
+                    Title
+                  </label>
+                  <input type="text" class="form-control" id="title"/>
+                </div>
+                <div class="col-md-2 form-group">
+                  <label class="control-label" for="priority">
+		    <i class="fa fa-fw fa-bolt"></i>
+                    Priority
+                  </label>
+                  <select class="selectpicker show-tick form-control"
+                          id="priority" name="priority"
+                          data-live-search="true">
+		    <option value="1" data-tokens="Normal">
+		      Normal
+		    </option>
+                  </select>
+                </div>
+                <div class="col-md-2 form-group">
+                  <label class="control-label" for="status">
+		    <i class="fa fa-fw fa-info"></i>
+                    Status
+                  </label>
+                  <select class="selectpicker show-tick form-control"
+                          id="status" name="status"
+                          data-live-search="true">
+		    <option value="0" data-tokens="Open">
+		      Open
+		    </option>
+		    <option value="1" data-tokens="Closed">
+		      Closed
+		    </option>
+                  </select>
+                </div>
+	      </div>
+	      <div class="row">
+		<div class="col-md-5 form-group">
+                  <label class="control-label" for="project">
+		    <i class="fa fa-fw fa-briefcase"></i>
+                    Project
+                  </label>
+                  <select class="selectpicker show-tick form-control"
+                          id="project" name="project" title="..."
+                          data-live-search="true" data-container="body"
+			  data-size="10">
+                  </select>
+		</div>
+		<div class="col-md-3 form-group">
+                  <label class="control-label" for="name">
+		    <i class="fa fa-fw fa-files-o"></i>
+                    Version
+                  </label>
+                  <select class="selectpicker show-tick form-control"
+                          id="function" name="priority"
+                          data-live-search="true">
+		    <option value="0" data-tokens="Default">
+		      Default
+		    </option>
+                  </select>
+                </div>
+		<div class="col-md-2 form-group">
+                  <label class="control-label" for="mw_start">
+		    <i class="fa fa-fw fa-calendar"></i>
+                    Start
+                  </label>
+                  <input type="text" class="form-control select-date"
+			 id="mw_start" name="date">
+		</div>
+		<div class="col-md-2 form-group">
+                  <label class="control-label" for="mw_end">
+		    <i class="fa fa-fw fa-calendar"></i>
+                    Due
+                  </label>
+                  <input type="text" class="form-control select-date"
+			 id="mw_end" name="date">
+		</div>
+	      </div>
+              <div class="row row-eq-height">
+		<div class="col-xs-6 col-md-8">
+		  <label class="control-label" for="description">
+		    <i class="fa fa-info fa-fw"></i>
+		    Description
+		  </label>
+		  <textarea id="description" class="form-control" rows="12"
+			    spellcheck="true" wrap="soft"
+			    style="resize:none;overflow-x:hidden;
+				   word-wrap:break-word"></textarea>
+		</div>
+		<div class="col-xs-12 col-md-4">
+
+		  <div class="col-md-12 form-group" style="padding:0px;">
+                    <label class="control-label" for="requester">
+		      <i class="fa fa-fw fa-user"></i>
+                      Requester
+                    </label>
+                    <select class="selectpicker show-tick form-control"
+                            id="requester" name="requester" title="..."
+                            data-live-search="true" data-container="body"
+			    data-size="auto">
+                    </select>
+		  </div>
+		  <div class="col-md-12 form-group" style="padding:0px;">
+                    <label class="control-label" for="reference">
+		      <i class="fa fa-fw fa-link"></i>
+                      Reference
+                    </label>
+                    <input type="text" class="form-control" id="reference"/>
+		  </div>
+		  <div class="col-md-12 form-group" style="padding:0px;">
+                    <label class="control-label" for="url">
+		      <i class="fa fa-fw fa-link"></i>
+                      Remote
+                    </label>
+                    <input type="text" class="form-control" id="url"/>
+		  </div>
+		  <div class="col-md-12 form-group" style="padding:0px;">
+                    <label class="control-label" for="rate">
+		      <i class="fa fa-fw fa-bank"></i>
+                      Rate
+                    </label>
+                    <input type="text" class="form-control" id="rate"/>
+		  </div>		  
+		</div>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <div class="pull-right">
+            <button type="button" class="btn btn-default"
+                    data-dismiss="modal">
+              Close
+            </button>
+            <button type="button" class="btn btn-primary" id="change-save">
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

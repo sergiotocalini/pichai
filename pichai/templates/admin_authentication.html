@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+
+{% block title %}Administration - Authentication{% endblock %}
+
+{% block body %}
+<ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+  <li class="active">
+    <a data-toggle="tab" href="#masters">
+      <i class="fa fa-cube fa-fw"></i>
+      Masters
+    </a>
+  </li>
+  <li>
+    <a data-toggle="tab" href="#functions">
+      <i class="fa fa-cogs fa-fw"></i>
+      Functions
+    </a>
+  </li>  
+</ul>
+<div class="tab-content">
+  <div id="masters" class="tab-pane fade in active">
+    <div id="toolbar-masters">
+      <button class="btn btn-default" type="button" data-toggle="modal"
+	      data-target="#ModalMaster" aria-haspopup="true"
+	      aria-expanded="false">
+	<i class="fa fa-plus fa-fw"></i>
+      </button>
+    </div>
+    <table id="table-masters" data-show-toggle="false"
+	   data-show-export="false" data-row-style="rowStyle"
+	   data-show-columns="true" data-show-multi-sort="true"
+	   data-sort-name="name" data-pagination="true"
+	   data-toggle="table" data-search="true"
+	   data-toolbar="#toolbar-masters"
+	   data-show-footer="false" data-page-size="50" data-escape="false"
+	   class="table table-hover table-striped table-compact 
+		  table-condensed table-autosize">
+      <thead>
+	<tr>
+	  <th data-align="center" data-valign="middle" data-field="status"
+	      data-sortable="true" data-visible="false" data-checkbox="true">
+	    <i class="fa fa-fw fa-question"></i>
+	    Status
+	  </th>    
+	  <th data-align="center" data-valign="middle" data-field="name"
+	      data-sortable="true">
+	    <i class="fa fa-fw fa-sort-amount-desc"></i>	    
+	    Name
+	  </th>
+	  <th data-align="center" data-valign="middle" data-sortable="true"
+	      data-field="type">
+	    <i class="fa fa-fw fa-info"></i>
+	    Type
+	  </th>
+	  <th data-align="center" data-valign="middle" data-field="host">
+	    <i class="fa fa-fw fa-cloud"></i>
+	    Host
+	  </th>
+	  <th data-align="center" data-valign="middle" data-field="minions">
+	    <i class="fa fa-fw fa-cubes"></i>
+	    Minions
+	  </th>
+	  <th data-align="center" data-valign="middle" data-field="lastseen">
+	    <i class="fa fa-fw fa-calendar"></i>
+	    Last seen
+	  </th>
+	  <th data-align="center" data-valign="middle">
+	    <i class="fa fa-fw fa-cogs"></i>
+	    Actions
+	  </th>
+	</tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+  <div id="functions" class="tab-pane fade in">
+    <div id="toolbar-functions">
+      <button class="btn btn-default" type="button" data-toggle="modal"
+	      data-target="#ModalFunction" aria-haspopup="true"
+	      aria-expanded="false">
+	<i class="fa fa-plus fa-fw"></i>
+      </button>
+    </div>
+    <table id="table-functions" data-show-toggle="false"
+	   data-show-export="false" data-row-style="rowStyle"
+	   data-show-columns="true" data-show-multi-sort="true"
+	   data-sort-name="name" data-pagination="true"
+	   data-toggle="table" data-search="true"
+	   data-toolbar="#toolbar-functions"
+	   data-show-footer="false" data-page-size="50" data-escape="false"
+	   class="table table-hover table-striped table-compact 
+		  table-condensed table-autosize">
+      <thead>
+	<tr>
+	  <th data-align="center" data-valign="middle" data-field="fid"
+	      data-sortable="true" data-visible="false">
+	    <i class="fa fa-fw fa-question"></i>
+	    ID
+	  </th>    
+	  <th data-align="center" data-valign="middle" data-sortable="true"
+	      data-field="type">
+	    <i class="fa fa-fw fa-flask"></i>
+	    Type
+	  </th>
+	  <th data-align="center" data-valign="middle" data-field="fun"
+	      data-sortable="true">
+	    <i class="fa fa-fw fa-cog"></i>
+	    Function
+	  </th>
+	  <th data-align="center" data-valign="middle">
+	    <i class="fa fa-fw fa-cogs"></i>
+	    Actions
+	  </th>
+	</tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>  
+</div>
+<div id="ModalMaster" class="modal fade" tabindex="-1"
+     role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-vcenter">
+    <div class="modal-dialog">
+      <div class="modal-content">
+	<div class="modal-header"
+	     style="background-color: #337ab7; color: #fff;">
+	  <button type="button" class="close"
+		  data-dismiss="modal" aria-hidden="true">
+	    &times;
+	  </button>
+	  <h4 class="modal-title">New</h4>
+	</div>
+	<div class="modal-body">
+	  <form role="form" method="POST">
+	    <fieldset id="fieldset">
+	      <input class="col-md-8 form-control-static hidden" id="mid">
+	      <div class="row">
+		<div class="col-md-6 form-group">
+		  <label for="name">Name</label>
+		  <div class="input-group">
+		    <input type="text" class="form-control"
+			   id="name" name="name" placeholder="Name">
+		  </div>
+		</div>
+		<div class="col-md-6 form-group">
+		  <label for="backend">Type</label>
+		  <div class="input-group">
+		    <select class="selectpicker show-tick"
+			    id="type" name="type">
+		      <option value="SaltStack" data-icon="fa fa-fw fa-flask"
+			      data-tokens="SaltStack">SaltStack</option>
+		      <option value="Puppet" data-icon="fa fa-fw fa-flask"
+			      data-tokens="Puppet">Puppet</option>
+		      <option value="Chef" data-icon="fa fa-fw fa-flask"
+			      data-tokens="Chef">Chef</option>
+		    </select>
+		  </div>
+		</div>
+	      </div>
+	      <div class="row">
+		<div class="col-md-6 form-group">
+		  <label for="host">Host</label>
+		  <div class="input-group">
+		    <input type="text" class="form-control"
+			   id="host" name="host"
+			   placeholder="http://fqdn:8000/">
+		  </div>
+		</div>
+		<div class="col-md-6 form-group">
+		  <label for="host">Timeout</label>
+		  <div class="input-group">
+		    <input type="text" class="form-control"
+			   id="timeout" name="timeout"
+			   placeholder="120">
+		  </div>
+		</div>
+	      </div>
+	      <div class="row">
+    		<div class="col-md-6 form-group">
+		  <label for="account">Username</label>
+		  <div class="input-group">
+		    <input type="text" class="form-control"
+			   id="username" name="username"> 
+		  </div>
+		</div>
+		<div class="col-md-6 form-group">
+		  <label for="password">Password</label>
+		  <div class="input-group">
+		    <input type="password" class="form-control"
+			   id="password" name="password">
+		  </div>
+		</div>
+	      </div>
+	    </fieldset>
+	  </form>
+	</div>
+	<div class="modal-footer">
+	  <div class="pull-left">
+	    <a class="master-delete"
+	       style="outline: none;text-decoration: none;cursor: pointer;">
+	      <i class="fa fa-fw fa-2x fa-trash" aria-hidden="true"></i>
+	    </a>
+	    <a class="master-lock"
+	       style="outline: none;text-decoration: none;cursor: pointer;">
+	      <i class="fa fa-fw fa-2x" aria-hidden="true"></i>
+	    </a>
+	  </div>
+	  <div class="pull-right">
+	    <button type="button" class="btn btn-default"
+		    data-dismiss="modal">
+	      Close
+	    </button>
+	    <button type="button" class="btn btn-primary master-edit">
+	      Save
+	    </button>
+	  </div>
+	</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="ModalSearchMinions" class="modal fade" tabindex="-1"
+     role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-vcenter">
+    <div class="modal-dialog">
+      <div class="modal-content" style="padding-bottom: 1%">
+	<div class="modal-header"
+	     style="background-color: #337ab7; color: #fff;">
+	  <button type="button" class="close"
+		  data-dismiss="modal" aria-hidden="true">
+	    &times;
+	  </button>
+	  <h4 class="modal-title">Minions</h4>
+	</div>
+	<div class="modal-body" style="height: 500px;">
+	  <table id="table-minions-search"
+		 data-show-toggle="false" data-show-export="false"
+		 data-show-columns="true" data-show-multi-sort="true"
+		 data-sort-name="name" data-pagination="true"
+		 data-toggle="table" data-search="true"
+		 data-show-footer="false" data-page-size="50"
+		 data-escape="false"
+		 class="table-hover table-striped table-compact 
+			table-condensed table-autosize">
+	    <thead>
+	      <tr>
+		<th data-field="name" data-sorteable="true">
+		  <i class="fa fa-fw fa-sort-amount-desc"></i>
+		  Name
+		</th>
+		<th data-field="actions" data-align="center">
+		  <i class="fa fa-fw fa-cogs"></i>
+		  Actions
+		</th>
+	      </tr>
+	    </thead>
+	    <tbody>
+	    </tbody>
+	  </table>
+	</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<link href="//cdn.corpam.com.ar/bootstrap-table/stable/bootstrap-table.css" rel="stylesheet">
+<script src="//cdn.corpam.com.ar/bootstrap-table/stable/bootstrap-table.js"></script>
+<link href="//cdn.corpam.com.ar/bootstrap-select/stable/css/bootstrap-select.min.css" rel="stylesheet">
+<script src="//cdn.corpam.com.ar/bootstrap-select/stable/js/bootstrap-select.min.js"></script>
+<script>
+    $(document).ready(function () {
+	autosize_tables();
+	$(window).resize(function () {
+	    autosize_tables();
+	});
+	$('.modal').on('hidden.bs.modal', function(){
+	    $('.modal').find('.modal-title').html('New');
+	    var forms = $(this).find('form');
+	    forms.each(function(row){
+		forms[row].reset();
+	    });
+	    var selectpickers = $(this).find('.selectpicker');
+	    selectpickers.each(function(row){
+		$(selectpickers[row]).selectpicker('refresh');
+	    });
+	});
+	jqlisteners();
+    });
+{% include "js/common.js" %}
+function rowStyle(row, index) {
+    if ( row['status'] == 'False' ) {
+    	return {
+    	    css: {"text-decoration": "line-through"}
+    	};
+    } else {
+	return {
+	    css: {"text-decoration": "none"}
+	};
+    }
+}
+function jqlisteners() {
+    console.log("jqlisteners");
+}
+</script>
+{% endblock %}

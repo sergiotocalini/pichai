@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}Reports{% endblock %}
+
+{% block body %}
+<div class="reports-header section-header">
+  <div class="title">
+    <i class="fa fa-fw fa-pie-chart" aria-hidden="true"></i>
+    Reports
+  </div>
+</div>
+<div class="projects-content section-content" style="padding: 0% 1%;background: #f1f2f7;">
+  <!-- <div class="row" style="margin:0px"> -->
+  <!--   <div class="col-md-8"> -->
+  <div class="grid-stack">
+    <div class="grid-stack-item" data-gs-width="6" data-gs-height="6" data-gs-no-move="true" data-gs-no-resize="true">
+      <div class="panel" style="right:0px;left:0px;">
+	<header class="panel-heading" style="border-color: #eff2f7;font-size: 13px;font-weight: 400;background: #fafafa;text-transform: uppercase;padding: 15px;">
+	  Prueba
+	  <span class="tools pull-right">
+	    <a data-init="true" href="#reload" data-click="panel-reload" class="fa fa-fw fa-refresh"></a>
+	    <a data-init="true" href="#collapse" data-click="panel-collapse" class="fa fa-fw fa-chevron-down"></a>
+	    <a data-init="true" href="#remove" data-click="panel-remove" class="fa fa-fw fa-times"></a>
+	  </span>
+	</header>
+	<div class="panel-body">
+	  <h4 class="text-center">Prueba</h4>
+	  <div id="graph-area" class="main-chart height-sm" style="height:100%;width:100%;;">
+	  </div>
+	</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+.grid-stack-item {
+    margin:1% 0%;
+}
+.grid-stack-item-content {
+right:0px;
+left:0px;
+}
+.panel .panel-body {
+    padding: 1%;
+    position: relative;
+}
+.panel .panel-body .panel-loader{
+    -moz-border-radius:0 0 4px 4px;
+    -webkit-animation:fadeIn .2s;
+    -webkit-border-radius:0 0 4px 4px;
+    animation:fadeIn .2s;
+    background:#fff;
+    border-radius:0 0 4px 4px;
+    bottom:0;
+    filter:alpha(opacity=90);
+    left:0;
+    opacity:.9;
+    position:absolute;
+    right:0;
+    top:0;
+    z-index:1020;
+}
+.panel .panel-heading .tools a {
+text-decoration: none;margin-left: 10px;color: #a7a7a7;font-size: 12px;
+}
+.panel-loader {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index:10;
+}
+.panel-loader i {
+    top: 40%;
+    left: 45%;
+    position: absolute;
+    transform: translateY(-50%) translateX(-50%);
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+
+<link rel="stylesheet" href="/pichai/static/extras/gridstack/0.3.0/css/gridstack.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+<script src="/pichai/static/extras/gridstack/0.3.0/js/gridstack.all.js"></script>
+<script src="/pichai/static/extras/gridstack/0.3.0/js/gridstack.jQueryUI.js"></script>
+
+//<script src="//cdn.corpam.com.ar/d3/stable/d3.min.js"></script>
+//<script src="//cdn.corpam.com.ar/c3/stable/c3.min.js"></script>
+//<link href="//cdn.corpam.com.ar/c3/stable/c3.min.css" rel="stylesheet" type="text/css">
+<script>
+    $(document).on("click","[data-click=panel-reload]", function(a) {
+	a.preventDefault();
+	var b=$(this).closest(".panel");
+	if (!$(b).hasClass("panel-loading")) {
+	    var c=$(b).find(".panel-body");
+	    var d='<div class="panel-loader"><i class="fa fa-5x fa-spinner fa-spin"></i></div>';
+	    $(b).addClass("panel-loading");
+	    $(c).prepend(d);
+	    setTimeout(function() {
+		$(b).removeClass("panel-loading");
+		$(b).find(".panel-loader").remove()
+	    }, 2e3)
+	}
+    });
+    $(document).on("click","[data-click=panel-remove]",function(a){
+    a.preventDefault();
+    $(this).closest(".grid-stack-item").remove()
+});
+
+    $(document).on("click","[data-click=panel-collapse]",function(a) {
+	a.preventDefault();
+	$(this).closest(".panel").find(".panel-body").slideToggle()
+    });
+    $(document).ready(function () {
+	$('.grid-stack').gridstack();
+	Morris.Area({
+            element: 'graph-area',
+            padding: 10,
+            behaveLikeLine: true,
+            gridEnabled: true,
+            gridLineColor: '#dddddd',
+            axes: true,
+            fillOpacity: .7,
+            data: [{
+                period: '2010 Q1',
+                iphone: 10,
+                ipad: 10,
+                itouch: 10
+            }, {
+                period: '2010 Q2',
+                iphone: 1778,
+                ipad: 7294,
+                itouch: 18441
+            }, {
+                period: '2010 Q3',
+                iphone: 4912,
+                ipad: 12969,
+                itouch: 3501
+            }, {
+                period: '2010 Q4',
+                iphone: 3767,
+                ipad: 3597,
+                itouch: 5689
+            }, {
+                period: '2011 Q1',
+                iphone: 6810,
+                ipad: 1914,
+                itouch: 2293
+            }, {
+                period: '2011 Q2',
+                iphone: 5670,
+                ipad: 4293,
+                itouch: 1881
+            }, {
+                period: '2011 Q3',
+                iphone: 4820,
+                ipad: 3795,
+                itouch: 1588
+            }, {
+                period: '2011 Q4',
+                iphone: 25073,
+                ipad: 5967,
+                itouch: 5175
+            }, {
+                period: '2012 Q1',
+                iphone: 10687,
+                ipad: 34460,
+                itouch: 22028
+            }, {
+                period: '2012 Q2',
+                iphone: 1000,
+                ipad: 5713,
+                itouch: 1791
+            }
+                  ],
+            lineColors: ['#ED5D5D', '#D6D23A', '#32D2C9'],
+            xkey: 'period',
+            ykeys: ['iphone', 'ipad', 'itouch'],
+            labels: ['iPhone', 'iPad', 'iPod Touch'],
+            pointSize: 0,
+            lineWidth: 0,
+            hideHover: 'auto'
+
+        });
+    });
+</script>
+{% endblock %}
