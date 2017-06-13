@@ -138,7 +138,18 @@
 		      <i class="fa fa-fw fa-bank"></i>
                       Rate
                     </label>
-                    <input type="text" class="form-control" id="rate"/>
+		    <div class="input-group">
+		      <span class="input-group-addon">
+			<select class="selectpicker">
+			  <option>USD</option>
+			  <option>EUR</option>
+			  <option>ARS</option>
+			</select>
+		      </span>
+                      <input type="number" class="form-control" id="rate"
+			     required="" placeholder="0.00" min="0.00"
+			     step="0.01"/>
+		    </div>
 		  </div>		  
 		</div>
               </div>

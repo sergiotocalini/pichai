@@ -1,82 +1,93 @@
 {% extends "base.html" %}
 
-{% block title %}Administration - Users{% endblock %}
+{% block title %}Administration: Users{% endblock %}
 
 {% block body %}
-<ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
-  <li class="active">
-    <a data-toggle="tab" href="#users">
-      <i class="fa fa-user fa-fw"></i>
-      Users
-    </a>
-  </li>
-</ul>
-<div class="tab-content">
-  <div id="users" class="tab-pane fade in active">
-    <div id="users-toolbar">
-      <button class="btn btn-primary" type="button" data-toggle="modal"
-	      aria-haspopup="true" aria-expanded="false">
-        <i class="fa fa-fw fa-plus"></i>
-      </button>
+<div class="admin-users-header section-header">
+  <div class="title">
+    <i class="fa fa-fw fa-users" aria-hidden="true"></i>
+    Administration: Users
+  </div>
+</div>
+<div class="admin-users-content section-content" style="padding: 0% 1%">
+  <div class="menu-information">
+    <div class="admin-users-menu list-group nav nav-tabs" data-tabs="tabs">
+      <a href="#admin-users" data-toggle="tab" class="list-group-item">
+	<i class="fa fa-fw fa-users" aria-hidden="true"></i>
+	Users
+      </a>
     </div>
-    <table id="table-users" data-show-toggle="false"
-           data-show-toggle="false" data-show-export="false"
-           data-show-columns="false" data-show-multi-sort="true"
-           data-sort-name="displayname" data-pagination="true"
-           data-toggle="table" data-search="true"
-           data-show-footer="false" data-page-size="50"
-           data-escape="false" data-side-pagination="server"
-	   data-query-params="UsersParams" 
-	   data-show-refresh="true" data-row-style="rowStyle"
-	   data-url="{{ url_for('api_users_all') }}?"
-	   data-response-handler="UsersResponseHandler"
-	   data-toolbar="#users-toolbar"
-	   class="table table-hover table-striped table-compact 
-		  table-condensed table-autosize">
-      <thead>
-	<tr>
-	  <th data-align="center" data-valign="middle" data-field="status"
-	      data-sortable="true" data-visible="false" data-checkbox="true">
-	    <i class="fa fa-fw fa-question"></i>
-	    Status
-	  </th>
-	  <th data-sortable="true" data-halign="center"
-	      data-valign="middle" data-field="id" data-visible="false">
-	    #
-	  </th>
-	  <th data-sortable="true" data-halign="center"
-	      data-valign="middle" data-field="userid" data-visible="false">
-	    Account
-	  </th>
-	  <th data-sortable="true" data-halign="center"
-	      data-valign="middle" data-field="display"
-	      data-formatter="UsersFormatterName">
-	    Display Name
-	  </th>
-	  <th data-halign="center" data-valign="middle" 
-	      data-align="left" data-field="email">
-	    Email
-	  </th>
-	  <th data-valign="middle" data-align="center"
-	      data-field="created_on" data-formatter="UsersFormatterDate">
-	    <i class="fa fa-calendar fa-fw"></i>
-	    Created on
-	  </th>
-	  <th data-valign="middle" data-align="center"
-	      data-field="last_seen" data-formatter="UsersFormatterDate">
-	    <i class="fa fa-calendar fa-fw"></i>
-	    Last seen
-	  </th>
-	  <th data-valign="middle" data-align="center"
-	      data-valign="middle" data-formatter="UsersFormatterActions">
-	    <i class="fa fa-cogs fa-fw"></i>
-	    Actions
-	  </th>
-	</tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
+  </div>
+  <div class="admin-tab-content tab-content" style="margin: 0.5% 0%;">
+    <div id="admin-users" class="tab-subcontent tab-pane fade in active">
+      <div id="admin-users-toolbar">
+	<button class="btn btn-primary" type="button" data-toggle="modal"
+		aria-haspopup="true" aria-expanded="false">
+          <i class="fa fa-fw fa-plus"></i>
+	</button>
+      </div>
+      <table id="table-users" data-show-toggle="false"
+             data-show-toggle="false" data-show-export="false"
+             data-show-columns="false" data-show-multi-sort="true"
+             data-sort-name="displayname" data-pagination="true"
+             data-toggle="table" data-search="true"
+             data-show-footer="false" data-page-size="50"
+             data-escape="false" data-side-pagination="server"
+	     data-query-params="UsersParams" 
+	     data-show-refresh="true" data-row-style="rowStyle"
+	     data-url="{{ url_for('api_users_all') }}?"
+	     data-response-handler="UsersResponseHandler"
+	     data-toolbar="#admin-users-toolbar"
+	     class="table table-hover table-striped table-compact 
+		    table-condensed table-autosize">
+	<thead>
+	  <tr>
+	    <th data-align="center" data-valign="middle" data-field="status"
+		data-sortable="true" data-visible="false"
+		data-checkbox="true">
+	      <i class="fa fa-fw fa-question"></i>
+	      Status
+	    </th>
+	    <th data-sortable="true" data-halign="center"
+		data-valign="middle" data-field="id"
+		data-visible="false">
+	      #
+	    </th>
+	    <th data-sortable="true" data-halign="center"
+		data-valign="middle" data-field="userid"
+		data-visible="false">
+	      Account
+	    </th>
+	    <th data-sortable="true" data-halign="center"
+		data-valign="middle" data-field="display"
+		data-formatter="UsersFormatterName">
+	      Display Name
+	    </th>
+	    <th data-halign="center" data-valign="middle" 
+		data-align="left" data-field="email">
+	      Email
+	    </th>
+	    <th data-valign="middle" data-align="center"
+		data-field="created_on" data-formatter="UsersFormatterDate">
+	      <i class="fa fa-calendar fa-fw"></i>
+	      Created on
+	    </th>
+	    <th data-valign="middle" data-align="center"
+		data-field="last_seen" data-formatter="UsersFormatterDate">
+	      <i class="fa fa-calendar fa-fw"></i>
+	      Last seen
+	    </th>
+	    <th data-valign="middle" data-align="center"
+		data-valign="middle" data-formatter="UsersFormatterActions">
+	      <i class="fa fa-cogs fa-fw"></i>
+	      Actions
+	    </th>
+	  </tr>
+	</thead>
+	<tbody>
+	</tbody>
+      </table>
+    </div>
   </div>
 </div>
 <div id="ModalUser" class="modal fade" tabindex="-1"
@@ -95,7 +106,8 @@
 	<div class="modal-body">
 	  <img id="avatar" class="img-circle"
 	       style="float:left; width:25%; padding:5% 0%;"/>
-	  <form class="form-horizontal" style="float:left; width:65%;padding:5% 5%;"
+	  <form class="form-horizontal" 
+		style="float:left; width:65%;padding:5% 5%;"
 		role="form" method="POST">
 	    <fieldset id="fieldset">
 	      <input class="col-md-8 form-control-static hidden" id="uid">
@@ -120,7 +132,8 @@
 	    </fieldset>
 	  </form>
 	</div>
-	<div class="modal-footer" style="position:absolute;width:100%;bottom:0px">
+	<div class="modal-footer" 
+	     style="position:absolute;width:100%;bottom:0px">
 	  <div class="pull-left">
 	    <a class="user-admin"
 	       style="outline: none;text-decoration: none;cursor: pointer;">

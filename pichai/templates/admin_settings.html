@@ -1,56 +1,81 @@
 {% extends "base.html" %}
 
-{% block title %}Administration - Settings{% endblock %}
+{% block title %}Administration: Settings{% endblock %}
 
 {% block body %}
-<ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
-  <li class="active">
-    <a data-toggle="tab" href="#variables">
-      <i class="fa fa-fw fa-code"></i>
-      Variables
-    </a>
-  </li>
-</ul>
-<div class="tab-content">
-  <div id="variables" class="tab-pane fade in active">
-    <table id="table-variables" data-show-toggle="false"
-	   data-show-export="false"
-	   data-show-columns="true" data-show-multi-sort="true"
-	   data-sort-name="key" data-pagination="true"
-	   data-toggle="table" data-search="true"
-	   data-toolbar="#toolbar-variables"
-	   data-show-footer="false" data-page-size="50" data-escape="false"
-	   class="table table-hover table-striped table-compact 
-		  table-condensed table-autosize">
-      <thead>
-	<tr>
-	  <th data-sortable="true" data-halign="center"
-	      data-valign="middle" data-field="vid"
-	      data-visible="false">
-	    <i class="fa fa-fw fa-key"></i>		   
-	    ID
-	  </th>
-	  <th data-sortable="true" data-halign="center"
-	      data-valign="middle" data-field="key">
-	    <i class="fa fa-fw fa-key"></i>	  
-	    Key
-	  </th>
-	  <th data-halign="center" data-halign="center"
-	      data-valign="middle" data-field="value">
-	    <i class="fa fa-fw fa-info"></i>
-	    Value
-	  </th>
-      </thead>
-      <tbody>
-	{% for config in data('Config') %}
-	<tr>
-	  <td>{{ config.id }}</td>
-	  <td>{{ config.key }}</td>
-	  <td>{{ config.value }}</td>
-	</tr>
-	{% endfor %}      
-      </tbody>
-    </table>
+<div class="admin-settings-header section-header">
+  <div class="title">
+    <i class="fa fa-fw fa-wrench" aria-hidden="true"></i>
+    Administration: Settings
+  </div>
+</div>
+<div class="admin-settings-content section-content" style="padding: 0% 1%">
+  <div class="menu-information">
+    <div class="admin-settings-menu list-group nav nav-tabs" data-tabs="tabs">
+      <a href="#admin-general" data-toggle="tab" class="list-group-item">
+	<i class="fa fa-fw fa-sliders" aria-hidden="true"></i>
+	General
+      </a>
+      <a href="#admin-display" data-toggle="tab" class="list-group-item">
+	<i class="fa fa-fw fa-magic" aria-hidden="true"></i>
+	Display
+      </a>
+      <a href="#admin-auth" data-toggle="tab" class="list-group-item">
+	<i class="fa fa-fw fa-database" aria-hidden="true"></i>
+	Authentication
+      </a>
+      <a href="#admin-notify" data-toggle="tab" class="list-group-item">
+	<i class="fa fa-fw fa-bell" aria-hidden="true"></i>
+	Notifications
+      </a>
+      <a href="#admin-variables" data-toggle="tab" class="list-group-item">
+	<i class="fa fa-fw fa-code" aria-hidden="true"></i>
+	Variables
+      </a>
+    </div>
+  </div>
+  <div class="admin-tab-content tab-content" style="margin: 0.5% 0%;">
+    <div id="admin-variables" class="tab-subcontent tab-pane fade in active">
+      <table id="table-admin-variables" data-show-toggle="false"
+	     data-show-export="false"
+	     data-show-columns="true" data-show-multi-sort="true"
+	     data-sort-name="key" data-pagination="true"
+	     data-toggle="table" data-search="true"
+	     data-toolbar="#toolbar-variables"
+	     data-show-footer="false" data-page-size="50"
+	     data-escape="false"
+	     class="table table-hover table-striped table-compact 
+		    table-condensed table-autosize">
+	<thead>
+	  <tr>
+	    <th data-sortable="true" data-halign="center"
+		data-valign="middle" data-field="vid"
+		data-visible="false">
+	      <i class="fa fa-fw fa-key"></i>		   
+	      ID
+	    </th>
+	    <th data-sortable="true" data-halign="center"
+		data-valign="middle" data-field="key">
+	      <i class="fa fa-fw fa-key"></i>	  
+	      Key
+	    </th>
+	    <th data-halign="center" data-halign="center"
+		data-valign="middle" data-field="value">
+	      <i class="fa fa-fw fa-info"></i>
+	      Value
+	    </th>
+	</thead>
+	<tbody>
+	  {% for config in data('Config') %}
+	  <tr>
+	    <td>{{ config.id }}</td>
+	    <td>{{ config.key }}</td>
+	    <td>{{ config.value }}</td>
+	  </tr>
+	  {% endfor %}      
+	</tbody>
+      </table>
+    </div>
   </div>
 </div>
 {% endblock %}

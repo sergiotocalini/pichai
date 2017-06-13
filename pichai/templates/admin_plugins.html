@@ -1,12 +1,61 @@
 {% extends "base.html" %}
 
-{% block title %}DOLab - Administration{% endblock %}
+{% block title %}Administration - Plugins{% endblock %}
 
 {% block body %}
-<div id="admin">
-  <div class="content">
-    {% block content %}
-    {% endblock %}
+<div class="admin-plug-header section-header">
+  <div class="title">
+    <i class="fa fa-fw fa-plug" aria-hidden="true"></i>
+    Administration: Plugins
   </div>
 </div>
+<div class="admin-plug-content section-content" style="padding: 0% 1%">
+  <div class="admin-tab-content tab-content" 
+       style="margin: 0.5% 0%;width:100%;">
+    <div id="admin-plug" class="tab-subcontent tab-pane fade in active">
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<link href="//cdn.corpam.com.ar/bootstrap-table/stable/bootstrap-table.css" rel="stylesheet">
+<script src="//cdn.corpam.com.ar/bootstrap-table/stable/bootstrap-table.js"></script>
+<link href="//cdn.corpam.com.ar/bootstrap-select/stable/css/bootstrap-select.min.css" rel="stylesheet">
+<script src="//cdn.corpam.com.ar/bootstrap-select/stable/js/bootstrap-select.min.js"></script>
+<script>
+    $(document).ready(function () {
+	autosize_tables();
+	$(window).resize(function () {
+	    autosize_tables();
+	});
+	$('.modal').on('hidden.bs.modal', function(){
+	    $('.modal').find('.modal-title').html('New');
+	    var forms = $(this).find('form');
+	    forms.each(function(row){
+		forms[row].reset();
+	    });
+	    var selectpickers = $(this).find('.selectpicker');
+	    selectpickers.each(function(row){
+		$(selectpickers[row]).selectpicker('refresh');
+	    });
+	});
+	jqlisteners();
+    });
+{% include "js/common.js" %}
+function rowStyle(row, index) {
+    if ( row['status'] == 'False' ) {
+    	return {
+    	    css: {"text-decoration": "line-through"}
+    	};
+    } else {
+	return {
+	    css: {"text-decoration": "none"}
+	};
+    }
+}
+function jqlisteners() {
+    console.log("jqlisteners");
+}
+</script>
 {% endblock %}

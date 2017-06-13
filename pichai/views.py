@@ -152,12 +152,10 @@ def index():
 @admin_required
 @db_session
 def admin(mod):
-    if mod == 'projects':
-        return render_template('admin_projects.html')
-    elif mod == 'users':
+    if mod == 'users':
         return render_template('admin_users.html')
-    elif mod == 'changes':
-        return render_template('admin_projects.html')
+    elif mod == 'modules':
+        return render_template('admin_modules.html')
     elif mod == 'settings':
         return render_template('admin_settings.html')
     elif mod == 'authentication':

@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Administration: Modules{% endblock %}
+
+{% block body %}
+<div class="admin-modules-header section-header">
+  <div class="title">
+    <i class="fa fa-fw fa-cogs" aria-hidden="true"></i>
+    Administration: Modules
+  </div>
+</div>
+<div class="admin-modules-content section-content" style="padding: 0% 1%">
+  <div class="menu-information">
+    <div class="admin-modules-menu list-group nav nav-tabs" data-tabs="tabs">
+      <a href="#admin-projects" data-toggle="tab" class="list-group-item">
+	<i class="fa fa-fw fa-briefcase" aria-hidden="true"></i>
+	Projects
+      </a>
+      <a href="#admin-changes" data-toggle="tab" class="list-group-item">
+	<i class="fa fa-fw fa-tasks" aria-hidden="true"></i>
+	Changes
+      </a>
+      <a href="#admin-objects" data-toggle="tab" class="list-group-item">
+	<i class="fa fa-fw fa-cubes" aria-hidden="true"></i>
+	Objects
+      </a>
+      <a href="#admin-invoices" data-toggle="tab" class="list-group-item">
+	<i class="fa fa-fw fa-book" aria-hidden="true"></i>
+	Invoices
+      </a>
+      <a href="#admin-meetings" data-toggle="tab" class="list-group-item">
+	<i class="fa fa-fw fa-comments-o" aria-hidden="true"></i>
+	Meetings
+      </a>
+      <a href="#admin-incidents" data-toggle="tab" class="list-group-item">
+	<i class="fa fa-fw fa-bug" aria-hidden="true"></i>
+	Incidents
+      </a>
+      <a href="#admin-customers" data-toggle="tab" class="list-group-item">
+	<i class="fa fa-fw fa-id-card" aria-hidden="true"></i>
+	Customers
+      </a>
+      <a href="#admin-teams" data-toggle="tab" class="list-group-item">
+	<i class="fa fa-fw fa-group" aria-hidden="true"></i>
+	Teams
+      </a>
+    </div>
+  </div>
+  <div class="admin-tab-content tab-content" style="margin: 0.5% 0%;">
+    <div id="admin-projects" class="tab-subcontent tab-pane fade in active">
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<link href="//cdn.corpam.com.ar/bootstrap-table/stable/bootstrap-table.css" rel="stylesheet">
+<script src="//cdn.corpam.com.ar/bootstrap-table/stable/bootstrap-table.js"></script>
+<script>
+    $(document).ready(function () {
+	autosize_tables();
+	$(window).resize(function () {
+	    autosize_tables();
+	});
+	$('.modal').on('hidden.bs.modal', function(){
+	    $('.modal').find('.modal-title').html('New');
+	    var forms = $(this).find('form');
+	    forms.each(function(row){
+		forms[row].reset();
+	    });
+	    var selectpickers = $(this).find('.selectpicker');
+	    selectpickers.each(function(row){
+		$(selectpickers[row]).selectpicker('refresh');
+	    });
+	});
+	jqlisteners();
+    });
+function rowStyle(row, index) {
+    if ( row['status'] == 'False' ) {
+    	return {
+    	    css: {"text-decoration": "line-through"}
+    	};
+    } else {
+	return {
+	    css: {"text-decoration": "none"}
+	};
+    }
+}
+function autosize_tables() {
+    var tables = $('body').find(".table-autosize");
+    tables.each(function(row){
+	var selector = $(tables[row]).attr('id');
+	selector = '#' + selector;
+	$(selector).on('post-body.bs.table', function () {
+	    jqlisteners();
+	});
+	$(selector).bootstrapTable({
+	    height: table_height(selector),
+	});
+	$(selector).bootstrapTable('resetView', {
+	    height: table_height(selector),
+	});	    
+    });
+}
+function table_height(table) {
+    var parent = $(table).parent().parent().parent().parent();
+    return parent.height();
+};
+</script>
+{% endblock %}
