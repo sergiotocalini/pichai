@@ -170,7 +170,10 @@
 	  </label>
 	  <div class="col-md-8 form-group form-item">
 	    <p class="form-control-static pull-right">
-	      {{ change.rate }}
+	      <i class="fa fa-fw {{ change.rate['currency']['icon'] }}"
+		 aria-hidden="true"></i>
+	      {{ change.rate['cost'] }}
+	      ( {{ change.rate['currency']['name'] }} )
 	    </p>
 	  </div>
 	</div>
@@ -467,6 +470,9 @@
 	$("select[id=requester]").on('loaded.bs.select', function (e) {
 	    load_select_users($(this));
 	});
+       	$("select[id=currency]").on('loaded.bs.select', function (e) {
+	    load_select_config_changes_currency($(this));
+	});	
 	autosize_tables();
 	jqlisteners();
     });

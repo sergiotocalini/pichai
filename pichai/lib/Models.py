@@ -84,7 +84,7 @@ class Change(db.Entity):
     updated_on = Required(datetime, sql_type='TIMESTAMP',
                           sql_default='CURRENT_TIMESTAMP',
                           default=datetime.now)
-    rate = Required(float, default=0)
+    rate = Optional(Json)
     requester = Required(User, reverse='requests')
     objects = Set('Object')
     project = Required(Project)

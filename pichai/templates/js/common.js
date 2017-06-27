@@ -26,6 +26,41 @@ function table_height(table) {
     var parent = $(table).parent().parent().parent().parent();
     return parent.height();
 };
+function rowStyle(row, index) {
+    if ( row['status'] == false ) {
+    return {
+        css: {"text-decoration": "line-through"}
+    };
+    } else {
+    return {
+        css: {"text-decoration": "none"}
+    };
+    }
+}
+function load_select_config_changes_currency(selection, option) {
+    $(selection).prop('disabled', true);
+    $.ajax({
+	async: true,
+	type: "GET",
+	url: "{{ url_for('api_configs') }}?key=CHANGES_CURRENCY",
+	success: function (e) {
+	    $(selection).html("");
+	    for(type in e['data']['value']) {
+		var row = e['data']['value'][type];
+		html ='<option value="' + row['id'] + '" ';
+		html+='data-tokens="' + row['name'] + '" ';
+		html+='data-icon="' + row['icon'] + '" ';
+		html+='data-name="' + row['name'] + '" ';
+		html+='data-content="<i class=\'fa fa-fw ' + row['icon'];
+		html+='\'></i> ' + row['name'] + '">';
+		html+=row['name'] + '</option>';
+		$(selection).append(html);
+	    }
+	    $(selection).prop('disabled', false);
+	    $(selection).selectpicker('refresh');
+	},
+    });
+}
 function load_select_config_objects_types(selection, option) {
     $(selection).prop('disabled', true);
     $.ajax({
@@ -136,4 +171,20 @@ function load_select_projects(selection, option) {
 	    $(selection).selectpicker('refresh');
 	},
     });
+}
+
+
+function PrintElem(elem) {
+    var mywindow = window.open('', 'PRINT', 'height=400,width=600');
+    mywindow.document.write('<html><head><title>' + document.title  + '</title>');
+    mywindow.document.write('</head><body >');
+    mywindow.document.write('<h1>' + document.title  + '</h1>');
+    mywindow.document.write(document.getElementById(elem).innerHTML);
+    mywindow.document.write('</body></html>');
+    mywindow.document.close(); // necessary for IE >= 10
+    mywindow.focus(); // necessary for IE >= 10*/
+
+    mywindow.print();
+    mywindow.close();
+    return true;
 }

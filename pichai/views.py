@@ -470,16 +470,19 @@ def api_changes_all():
         if args['filter'] == 'project':
             raw = select(c for c in Change if args['value'] != o.project.id)
         elif args['filter'] == 'customer':
-            raw = select(c for c in Change if args['value'] != c.project.customer.id)
+            raw = select(c for c in Change 
+                         if args['value'] != c.project.customer.id)
         elif args['filter'] == 'object':
             obj = get_data('Object', id=args['value'])
             if obj:
                 raw = select(c for c in Change if obj not in c.objects)
     elif args['type'] == 'only' and (args['filter'] and args['value']):
         if args['filter'] == 'project':
-            raw = select(c for c in Change if args['value'] == c.project.id)
+            raw = select(c for c in Change 
+                         if args['value'] == c.project.id)
         elif args['filter'] == 'customer':
-            raw = select(c for c in Change if args['value'] == o.project.customer.id)
+            raw = select(c for c in Change 
+                         if args['value'] == o.project.customer.id)
         elif args['filter'] == 'object':
             obj = get_data('Object', id=args['value'])
             if obj:
@@ -487,7 +490,11 @@ def api_changes_all():
         elif args['filter'] == 'team':
             team = get_data('Team', id=args['value'])
             if team:
-                raw = select(c for c in Change for m in c.members if m in team.members)
+                raw = select(c for c in Change for m in c.members 
+                             if m in team.members)
+        elif args['filter'] == 'invoice':
+            raw = select(c for c in Change 
+                         if args['value'] == c.invoice.id)
     else:
         raw = get_data('Change')
 
@@ -660,21 +667,21 @@ def api_invoices():
     args = request.args.to_dict()
     qfilter = dict((x, args[x]) for x in args if x in ['id'])
     if qfilter:
-        customer = get_data('Customer', **qfilter)
-        if customer:
+        invoice = get_data('Invoice', **qfilter)
+        if invoice:
             data = []
             if request.method == 'PUT':
                 content = request.get_json(silent=True)
                 if content:
-                    customer.set(**content)
+                    invoice.set(**content)
                     updated = True
                 if updated:
                     commit()
             elif request.method == 'DELETE':
-                customer.delete()
+                invoice.delete()
                 commit()
             else:
-                data = customer.to_dict(related_objects=False)
+                data = invoice.to_dict(related_objects=False)
                 return jsonify(datetime=datetime.now(), data=data)
             return jsonify(datetime=datetime.now(), data=data)
         else:
@@ -682,7 +689,7 @@ def api_invoices():
     elif request.method == 'POST':
         content = request.get_json(silent=True)
         if content:
-            Customer(**content)
+            Invoice(**content)
             commit()
     else:
         abort(400)

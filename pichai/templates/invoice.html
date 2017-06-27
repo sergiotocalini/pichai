@@ -8,6 +8,28 @@
     <i class="fa fa-fw fa-book" aria-hidden="true"></i>
     Invoice: #{{ invoice.id }}
   </div>
+  <div class="toolbar">
+    <a id="invoice-print" href="#invoice-print" class="button"
+       data-toggle="confirmation" data-container="body"
+       style="padding: 0% 2%;outline: none;text-decoration:none;">
+      <i class="fa fa-2x fa-print" aria-hidden="true"></i>
+    </a>    
+    <a id="change-load" href="#change-load" class="disabled" 
+       data-id="{{ invoice.id }}"
+       style="padding: 0% 2%;outline: none;text-decoration:none;">
+      <i class="fa fa-2x fa-refresh" aria-hidden="true"></i>
+    </a>    
+    <a id="change-edit" href="#change-edit" data-id="{{ invoice.id }}"
+       style="padding: 0% 2%;outline: none;text-decoration:none;">
+      <i class="fa fa-2x fa-pencil" aria-hidden="true"></i>
+    </a>    
+    <a id="change-delete" href="#change-delete" data-id="{{ invoice.id }}"
+       data-toggle="confirmation" data-container="body">
+      <i class="fa fa-2x fa-trash" aria-hidden="true"></i>
+    </a>    
+  </div>
+  <div class="status progress">
+  </div>
 </div>
 <div class="invoice-content section-content">
   <div class="menu-information">
@@ -45,12 +67,159 @@
   </div>
   <div class="invoice-tab-content tab-content">
     <div id="invoice-details" class="tab-subcontent tab-pane fade in active">
+
+      <div class="invoice-box" id="section-to-print">
+        <table cellpadding="0" cellspacing="0">
+          <tr class="top">
+            <td colspan="2">
+              <table>
+                <tr>
+                  <td class="title">
+                    <img src="/pichai/static/img/customers/logo.evguine.png" 
+			 style="width:100px;height:100px;float:left;">
+                  </td>        
+                  <td>
+                    Invoice: #{{ invoice.id }}
+		    <br>
+                    Created: {{ dformat(invoice.issued_on, "%B %d, %y") }}
+		    <br>
+                    Due: February 1, 2015
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr class="information">
+            <td colspan="2">
+              <table>
+                <tr>
+                  <td>
+                    Next Step Webs, Inc.<br>
+                    12345 Sunny Road<br>
+                    Sunnyville, TX 12345
+                  </td>
+                  <td>
+                    Acme Corp.<br>
+                    John Doe<br>
+                    john@example.com
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>                             
+          <tr class="heading">
+            <td style="text-align:center">Date</td>
+            <td>Item</td>
+            <td>Rate</td>
+          </tr>
+          {% for item in invoice.changes %}	  
+          <tr class="item">
+            <td style="text-align:center">
+	      {{ dformat(item.mw_start) }}
+	    </td>
+            <td>{{ item.title }}</td>
+	    <td>
+	      <i class="fa fa-fw {{ item.rate['currency']['icon'] }}"
+		 aria-hidden="true"></i>
+	      {{ item.rate['cost'] }}
+	      ( {{ item.rate['currency']['name'] }} )
+	    </td>
+          </tr>
+	  {% endfor %}
+          <tr class="heading">
+            <td></td>
+            <td></td>
+            <td>Total</td>
+          </tr>
+        </table>
+      </div>
+
     </div>
     <div id="invoice-calendar" class="tab-subcontent tab-pane fade in">
       <div id="invoice-calendar-item"></div>
     </div>
     <div id="invoice-changes" class="tab-subcontent tab-pane fade in">
-      <div id="invoice-changes-item"></div>
+      <div id="invchg-toolbar">
+	<button class="btn btn-primary" type="button" data-toggle="modal"
+		data-target="#ModalChange"
+		aria-haspopup="true" aria-expanded="false">
+          <i class="fa fa-fw fa-plus"></i>
+	</button>
+      </div>
+      <table id="invchg-table"
+             data-show-toggle="false" data-show-export="false"
+             data-show-columns="true" data-show-multi-sort="true"
+             data-sort-name="id" data-pagination="true"
+             data-toggle="table" data-search="true"
+             data-show-footer="false" data-page-size="50"
+             data-escape="false" data-side-pagination="server"
+	     data-query-params="InvChgParams" 
+	     data-show-refresh="true" data-show-header="true"
+	     data-url="{{ url_for('api_changes_all') }}?"
+	     data-response-handler="InvChgResponseHandler"
+	     data-toolbar="#invchg-toolbar"
+	     data-reorderable-columns="true"
+	     class="table table-striped">
+	<thead>
+	  <tr>
+	    <th data-field="select" data-checkbox="true">
+	      <i class="fa fa-fw fa-question"></i>
+	      Select
+	    </th>
+	    <th data-field="id" data-align="center" title="ID"
+		data-sortable="true" data-valign="middle" 
+		data-formatter="ChangesFormatterID">
+	      #
+	    </th>
+            <th data-field="reference" data-align="center" 
+		data-valign="middle" data-sortable="true">
+              <i class="fa fa-link fa-fw"></i>
+              Reference
+            </th>
+            <th data-field="version" data-align="center" 
+		data-valign="middle" data-sortable="true"
+		data-visible="false">
+              <i class="fa fa-files-o fa-fw"></i>
+              Version
+            </th>
+            <th data-field="status" data-valign="middle" 
+		data-align="center" data-sortable="true">
+              <i class="fa fa-info fa-fw"></i>
+              Status
+            </th>
+            <th data-field="priority" data-valign="middle"
+		data-align="center" data-sortable="true">
+              <i class="fa fa-bolt fa-fw"></i>
+              Priority
+            </th>
+            <th data-field="title" data-valign="middle"
+		data-sortable="false" data-formatter="ChangesFormatterTitle">
+              <i class="fa fa-sort-amount-desc fa-fw"></i>
+              Title
+            </th>
+            <th data-field="mw_start" data-align="center" 
+		data-valign="middle" data-sortable="true"
+		data-visible="false" data-formatter="ChangesFormatterDate">
+              <i class="fa fa-calendar fa-fw"></i>
+              Start
+            </th>
+            <th data-field="mw_end" data-align="center" 
+		data-valign="middle" data-sortable="true"
+		data-visible="false" data-formatter="ChangesFormatterDate">
+              <i class="fa fa-calendar fa-fw"></i>
+              Due
+            </th>
+            <th data-field="updated_on" data-align="center" 
+		data-valign="middle" data-sortable="true"
+		data-formatter="ChangesFormatterDate">
+              <i class="fa fa-calendar fa-fw"></i>
+              Updated
+            </th>
+	  </tr>
+	</thead>
+	<tbody>
+	</tbody>
+      </table>
     </div>
   </div>
 </div>
@@ -62,6 +231,8 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.js"></script>
+<script src="/pichai/static/extras/bootstrap-confirmation/js/bootstrap-confirmation.min.js"></script>
+<script src="/pichai/static/extras/jQuery.printElement/master/js/jquery.printelement.min.js"></script>
 <script>
     $(document).ready(function () {
 	var calendar = '#invoice-calendar-item';
@@ -170,19 +341,13 @@
             });
 	});
 	autosize_tables();
-//	jqlisteners();
+	jqlisteners();
     });
 {% include "js/common.js" %}
-function rowStyle(row, index) {
-    if ( row['status'] == 'False' ) {
-    return {
-        css: {"text-decoration": "line-through"}
-    };
-    } else {
-    return {
-        css: {"text-decoration": "none"}
-    };
-    }
+{% include "js/change.js" %}
+{% include "js/invoice.js" %}
+function jqlisteners() {
+    jqlisteners_invoice();
 }
 </script>
 {% endblock %}

@@ -117,3 +117,31 @@ function jqlisteners_project() {
         });
     });
 }
+function PrjChgParams(params) {
+    params.type = 'only';
+    params.filter = 'project';
+    params.value  = '{{ project.id }}';
+    return params
+}
+function PrjChgResponseHandler(res) {
+    var data = [];
+    for(r in res.data) {
+	var row = res.data[r];
+	data.push({
+	    status: row.status,
+	    id: row.id,
+	    project: row.project.name,
+	    version: row.project.version,
+	    priority: row.priority,
+	    reference: row.number,
+	    title: row.title,
+	    mw_start: row.mw_start,
+	    mw_end: row.mw_end,
+	    updated_on: row.updated_on,
+	});
+    };
+    return {
+	total: res.total,
+	rows: data,
+    }
+}

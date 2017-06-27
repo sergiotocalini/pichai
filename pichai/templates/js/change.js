@@ -44,6 +44,8 @@ function jqlisteners_change() {
 		$(modal).find('#description').val(data['description']);
 		$(modal).find('#priority').val(data['priority']);
 		$(modal).find('#status').val(data['status']);
+		$(modal).find('#rate').val(data['rate']['cost']);
+		$(modal).find('#currency').selectpicker('val', data['rate']['currency']['id']);
                 $(modal).modal('show');
 	    },
 	});
@@ -78,6 +80,7 @@ function jqlisteners_change() {
         var cid = $(modal).find('#id').val();
         var url = "{{ url_for('api_changes') }}";
         var tag = $(modal).find('.change-status').find('i');
+	var cur_sel = $(modal).find('#currency').find("option:selected");
 	var data = {
 	    'title': $(modal).find('#title').val(),
 	    'description': $(modal).find('#description').val(),
@@ -88,9 +91,14 @@ function jqlisteners_change() {
 	    'status': $(modal).find('#status').val(),
 	    'mw_start': $(modal).find('#mw_start').val(),
 	    'mw_end': $(modal).find('#mw_end').val(),
-	    'rate': $(modal).find('#rate').val(),
+	    'rate': {'cost': $(modal).find('#rate').val(), 
+		     'currency': {
+			 'id':   $(cur_sel).val(),
+			 'name': $(cur_sel).data('name'),
+			 'icon': $(cur_sel).data('icon'),
+		     },
+		    },
 	};
-	console.log(data);
 	var method = 'POST';
 	if (cid != '') {
 	    method = 'PUT';
@@ -117,4 +125,28 @@ function jqlisteners_change() {
             }
         });
     });
+}
+function ChangesFormatterID(value, row) {
+    var html = ""
+    html += '<a href="{{ url_for('changes') }}/' + row.id + '">';
+    html += row.id;
+    html += '</a>';
+    return html;
+}
+function ChangesFormatterTitle(value, row) {
+    var html = ""
+    html += '<a href="{{ url_for('changes') }}/' + row.id + '">';
+    html += row.title;
+    html += '</a>';
+    return html;
+}
+function ChangesFormatterDate(value, row) {
+    return moment(Date.parse(value)).format("YYYY-MM-DD hh:mm");
+}
+function ChangesFormatterRate(value, row) {
+    var html = ""
+    html += row.id + '">';
+    html += row.title;
+    html += '</a>';
+    return html;
 }

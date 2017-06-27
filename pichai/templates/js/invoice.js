@@ -1,4 +1,16 @@
-function jqlisteners_object() {
+function jqlisteners_invoice() {
+    $("#invoice-print").confirmation({
+	onConfirm: function(e) {
+	    window.print();
+	},
+	placement: 'bottom',
+	btnOkLabel: 'Yes',
+	btnOkClass: 'btn btn-sm btn-primary',
+	btnOkIcon: 'fa fa-fw fa-check',
+	btnCancelLabel: 'No',
+	btnCancelClass: 'btn btn-sm btn-danger',
+	btnCancelIcon: 'fa fa-fw fa-remove',
+    });
     $("#object-delete").confirmation({
 	onConfirm: function(e) {
 	    var change = $(this).attr('id');
@@ -212,3 +224,34 @@ function InvoicesDetailFormatter(index, row) {
     html+='</div>';
     return html;
 }
+{% if invoice %}
+function InvChgParams(params) {
+    params.type = 'only';
+    params.filter = 'invoice';
+    params.value  = '{{ invoice.id }}';
+    return params
+}
+function InvChgResponseHandler(res) {
+    var data = [];
+    for(r in res.data) {
+	var row = res.data[r];
+	data.push({
+	    status: row.status,
+	    id: row.id,
+	    project: row.project.name,
+	    version: row.project.version,
+	    priority: row.priority,
+	    reference: row.number,
+	    title: row.title,
+	    mw_start: row.mw_start,
+	    mw_end: row.mw_end,
+	    updated_on: row.updated_on,
+	    rate: row.rate,
+	});
+    };
+    return {
+	total: res.total,
+	rows: data,
+    }
+}
+{% endif %}
